@@ -1,4 +1,7 @@
+import Location.Position;
 import javafx.application.Application;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.stage.Stage;
 
 public class main extends Application {
@@ -15,10 +18,16 @@ public class main extends Application {
         view = new View();
         this.stage = stage;
 
+        hookupEvents();
+
         this.stage.setTitle("Izzy");
         this.stage.sizeToScene();
         this.stage.setScene(view.scene);
         this.stage.setResizable(false);
         this.stage.show();
+    }
+
+    private void hookupEvents() {
+
     }
 }
