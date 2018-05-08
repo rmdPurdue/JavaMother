@@ -1,14 +1,16 @@
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.*;
 
 public class View {
     public Scene scene;
@@ -31,13 +33,30 @@ public class View {
     public Text yAngularAccelerationDisplay = new Text();
     public Text zAngularAccelerationDisplay = new Text();
 
+
+    TextField xPositionEntry = new TextField();
+    TextField yPositionEntry = new TextField();
+    TextField headingEntry = new TextField();
+    Button addLinearTarget = new Button("Add Target");
+    Button addRotationalTarget = new Button("Add Target");
+
+    public int centerlineX;
+    public int plasterlineY;
+
+    private Canvas backgroundCanvas = new Canvas(600,400);
+    private GraphicsContext backgroundGC = backgroundCanvas.getGraphicsContext2D();
+
+    Pane pane = new Pane();
+
     public View() {
         VBox header = makeHeader();
         VBox statusFields = makeSatusFields();
+        VBox targetArea = makeTargetArea();
 
         BorderPane window = new BorderPane();
         window.setTop(header);
         window.setLeft(statusFields);
+        window.setCenter(targetArea);
         this.scene = new Scene(window);
     }
 
@@ -67,15 +86,15 @@ public class View {
         Label angularPositionAreaLabel = new Label("Angular Position");
         angularPositionAreaLabel.setFont(Font.font("Arial", FontWeight.BOLD,14));
 
-        this.xPositionDisplay.setFont(statusFont);
-        this.yPositionDisplay.setFont(statusFont);
-        this.zPositionDisplay.setFont(statusFont);
-        this.xVelocityDisplay.setFont(statusFont);
-        this.yVelocityDisplay.setFont(statusFont);
-        this.zVelocityDisplay.setFont(statusFont);
-        this.xAccelerationDisplay.setFont(statusFont);
-        this.yAccelerationDisplay.setFont(statusFont);
-        this.zAccelerationDisplay.setFont(statusFont);
+        xPositionDisplay.setFont(statusFont);
+        yPositionDisplay.setFont(statusFont);
+        zPositionDisplay.setFont(statusFont);
+        xVelocityDisplay.setFont(statusFont);
+        yVelocityDisplay.setFont(statusFont);
+        zVelocityDisplay.setFont(statusFont);
+        xAccelerationDisplay.setFont(statusFont);
+        yAccelerationDisplay.setFont(statusFont);
+        zAccelerationDisplay.setFont(statusFont);
 
         Label xPositionLabel = new Label("X Position");
         xPositionLabel.setFont(statusLabelFont);
@@ -104,15 +123,15 @@ public class View {
         Label zAccelerationLabel = new Label("Acceleration in Z");
         zAccelerationLabel.setFont(statusLabelFont);
 
-        this.xAngularPositionDisplay.setFont(statusFont);
-        this.yAngularPositionDisplay.setFont(statusFont);
-        this.zAngularPositionDisplay.setFont(statusFont);
-        this.xAngularVelocityDisplay.setFont(statusFont);
-        this.yAngularVelocityDisplay.setFont(statusFont);
-        this.zAngularVelocityDisplay.setFont(statusFont);
-        this.xAngularAccelerationDisplay.setFont(statusFont);
-        this.yAngularAccelerationDisplay.setFont(statusFont);
-        this.zAngularAccelerationDisplay.setFont(statusFont);
+        xAngularPositionDisplay.setFont(statusFont);
+        yAngularPositionDisplay.setFont(statusFont);
+        zAngularPositionDisplay.setFont(statusFont);
+        xAngularVelocityDisplay.setFont(statusFont);
+        yAngularVelocityDisplay.setFont(statusFont);
+        zAngularVelocityDisplay.setFont(statusFont);
+        xAngularAccelerationDisplay.setFont(statusFont);
+        yAngularAccelerationDisplay.setFont(statusFont);
+        zAngularAccelerationDisplay.setFont(statusFont);
 
         Label xAnglePositionLabel = new Label("Angular Position in X");
         xAnglePositionLabel.setFont(statusLabelFont);
@@ -145,8 +164,13 @@ public class View {
         horizontalSeparator.setPadding(new Insets(10,5,5,10));
 
         GridPane positionStatusGrid = new GridPane();
+        positionStatusGrid.setAlignment(Pos.CENTER_RIGHT);
         positionStatusGrid.setHgap(10);
         positionStatusGrid.setVgap(5);
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHalignment(HPos.RIGHT);
+        positionStatusGrid.getColumnConstraints().addAll(columnConstraints, columnConstraints);
+
         positionStatusGrid.add(linearPositionAreaLabel,0,0,2,1);
         positionStatusGrid.add(xPositionLabel,0,1);
         positionStatusGrid.add(xPositionDisplay,1,1);
@@ -168,8 +192,11 @@ public class View {
         positionStatusGrid.add(zAccelerationDisplay,1,9);
 
         GridPane angularPositionStatusGrid = new GridPane();
+        angularPositionStatusGrid.setAlignment(Pos.CENTER_RIGHT);
         angularPositionStatusGrid.setHgap(10);
         angularPositionStatusGrid.setVgap(5);
+        angularPositionStatusGrid.getColumnConstraints().addAll(columnConstraints, columnConstraints);
+
         angularPositionStatusGrid.add(angularPositionAreaLabel,0,0,2,1);
         angularPositionStatusGrid.add(xAnglePositionLabel,0,1);
         angularPositionStatusGrid.add(xAngularPositionDisplay,1,1);
@@ -196,6 +223,66 @@ public class View {
         statusArea.getChildren().addAll(statusAreaLabel,positionStatusGrid,horizontalSeparator,angularPositionStatusGrid);
 
         return statusArea;
+    }
+
+    private VBox makeTargetArea() {
+        drawBackground();
+
+        pane.getChildren().add(backgroundCanvas);
+
+        Label linearMoveLabel = new Label("Linear Move");
+        Label rotationalMoveLabel = new Label("Rotational Move");
+        Label newXPositionLabel = new Label("X Position:");
+        Label newYPositionLabel = new Label("Y Position:");
+        Label newHeadingLabel = new Label("Heading:");
+
+        GridPane targetLinearPositionFields = new GridPane();
+        targetLinearPositionFields.add(linearMoveLabel,0,0,2,1);
+        targetLinearPositionFields.add(newXPositionLabel,0,1);
+        targetLinearPositionFields.add(xPositionEntry,1,1);
+        targetLinearPositionFields.add(newYPositionLabel,0,2);
+        targetLinearPositionFields.add(yPositionEntry,1,2);
+        targetLinearPositionFields.add(addLinearTarget,1,3);
+
+        GridPane targetRotationalPositionFields = new GridPane();
+
+        targetRotationalPositionFields.add(rotationalMoveLabel, 0, 0, 2, 1);
+        targetRotationalPositionFields.add(newHeadingLabel, 0, 1);
+        targetRotationalPositionFields.add(headingEntry,1,1);
+        targetRotationalPositionFields.add(addRotationalTarget,1,2);
+
+        HBox targetPositionFields = new HBox();
+        targetPositionFields.setPadding(new Insets(10,10,10,10));
+        targetPositionFields.setSpacing(20);
+        targetPositionFields.getChildren().addAll(targetLinearPositionFields, targetRotationalPositionFields);
+
+        VBox targetArea = new VBox();
+        targetArea.setPadding(new Insets(20,20,20,20));
+        targetArea.setSpacing(10);
+        targetArea.getChildren().addAll(pane, targetPositionFields);
+
+        return targetArea;
+    }
+
+    public void drawBackground() {
+        backgroundGC.clearRect(0,0, backgroundCanvas.getWidth(), backgroundCanvas.getHeight());
+        backgroundGC.setStroke(Color.BLACK);
+        backgroundGC.setLineWidth(2);
+        backgroundGC.setLineDashes(0);
+        backgroundGC.strokeRect(0,0,600,400);
+
+        backgroundGC.setStroke(Color.BLUE);
+        backgroundGC.setLineWidth(1);
+        backgroundGC.setLineDashes(5,5);
+        backgroundGC.strokeLine(centerlineX,0,centerlineX,400);
+        backgroundGC.strokeLine(0,plasterlineY,600,plasterlineY);
+    }
+
+
+    private GridPane makeStageSetupFields() {
+
+
+        return null;
     }
 
 }
