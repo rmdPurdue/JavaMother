@@ -86,21 +86,32 @@ public class Position {
 
 
     public Group updatePosition(double pixelRatio) {
+        /*
         double xx = this.marker.getLocalToSceneTransform().getMxx();
         double xy = this.marker.getLocalToSceneTransform().getMxy();
         double angle = Math.atan2(-xy, xx);
         angle = Math.toDegrees(angle);
         angle = angle < 0 ? angle + 360 : angle;
+*/
 
         this.position.setTranslateX((getX().getPosition() / pixelRatio) + translationX);
         this.heading.setTranslateX((getX().getPosition() / pixelRatio) + translationX);
         this.position.setTranslateY(translationY - (getY().getPosition() / pixelRatio));
         this.heading.setTranslateY(translationY - (getY().getPosition() / pixelRatio));
-
+/*
         this.marker.getTransforms().add(new Rotate(
                 (getX().getAngularPosition() / 1000) - angle,
                 (getX().getPosition() / pixelRatio) + translationX,
                 translationY - (getY().getPosition() / pixelRatio)));
+                */
+        this.marker.setRotate(getX().getAngularPosition() / 1000);
+        this.position.setTranslateX((Math.sin(Math.toRadians(getX().getAngularPosition() / 1000)) * 5.5) + translationX);
+        this.heading.setTranslateX((Math.sin(Math.toRadians(getX().getAngularPosition() / 1000)) * 5.5) + translationX);
+        this.position.setTranslateY(Math.ceil((Math.cos(Math.toRadians(getX().getAngularPosition() / (1000 * 2))) * 5.) + translationY));
+        this.heading.setTranslateY(Math.ceil((Math.cos(Math.toRadians(getX().getAngularPosition() / (1000 * 2))) * 5.5) + translationY));
+        System.out.println((Math.sin(Math.toRadians(getX().getAngularPosition() / 1000)) * 5.5) + translationX);
+        System.out.println(Math.ceil((Math.cos(Math.toRadians(getX().getAngularPosition() / (1000 * 2))) * 5.5) + translationY));
+
         return marker;
     }
 
