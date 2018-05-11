@@ -37,8 +37,12 @@ public class View {
     TextField xPositionEntry = new TextField();
     TextField yPositionEntry = new TextField();
     TextField headingEntry = new TextField();
-    Button addLinearTarget = new Button("Add Target");
-    Button addRotationalTarget = new Button("Add Target");
+    TextField totalTimeEntry = new TextField();
+    TextField accelerationTimeEntry = new TextField();
+    TextField decelerationTimeEntry = new TextField();
+    Button addLinearTargetBtn = new Button("Add Target");
+    Button addRotationalTargetBtn = new Button("Add Target");
+    Button goToTargetBtn = new Button("Go to Target");
 
     public int centerlineX;
     public int plasterlineY;
@@ -234,6 +238,9 @@ public class View {
         Label rotationalMoveLabel = new Label("Rotational Move");
         Label newXPositionLabel = new Label("X Position:");
         Label newYPositionLabel = new Label("Y Position:");
+        Label newTotalTime = new Label("Total move time: ");
+        Label newAccelerationTime = new Label("Total acceleration time: ");
+        Label newDecelerationTime = new Label("Total deceleration time: ");
         Label newHeadingLabel = new Label("Heading:");
 
         GridPane targetLinearPositionFields = new GridPane();
@@ -242,19 +249,28 @@ public class View {
         targetLinearPositionFields.add(xPositionEntry,1,1);
         targetLinearPositionFields.add(newYPositionLabel,0,2);
         targetLinearPositionFields.add(yPositionEntry,1,2);
-        targetLinearPositionFields.add(addLinearTarget,1,3);
+//        targetLinearPositionFields.add(addLinearTargetBtn,1,3);
 
         GridPane targetRotationalPositionFields = new GridPane();
 
         targetRotationalPositionFields.add(rotationalMoveLabel, 0, 0, 2, 1);
         targetRotationalPositionFields.add(newHeadingLabel, 0, 1);
         targetRotationalPositionFields.add(headingEntry,1,1);
-        targetRotationalPositionFields.add(addRotationalTarget,1,2);
+        targetRotationalPositionFields.add(addRotationalTargetBtn,1,2);
+
+        GridPane timeFields = new GridPane();
+        timeFields.add(newTotalTime, 0, 0);
+        timeFields.add(totalTimeEntry, 1, 0);
+        timeFields.add(newAccelerationTime,0,1);
+        timeFields.add(accelerationTimeEntry, 1,1);
+        timeFields.add(newDecelerationTime,0,2);
+        timeFields.add(decelerationTimeEntry,1,2);
+        timeFields.add(goToTargetBtn,1,3);
 
         HBox targetPositionFields = new HBox();
         targetPositionFields.setPadding(new Insets(10,10,10,10));
         targetPositionFields.setSpacing(20);
-        targetPositionFields.getChildren().addAll(targetLinearPositionFields, targetRotationalPositionFields);
+        targetPositionFields.getChildren().addAll(targetLinearPositionFields, targetRotationalPositionFields, timeFields);
 
         VBox targetArea = new VBox();
         targetArea.setPadding(new Insets(20,20,20,20));

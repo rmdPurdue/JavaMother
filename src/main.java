@@ -1,9 +1,9 @@
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 
 public class main extends Application {
     private int INCHES_TO_MICRONS = 25400;
@@ -17,7 +17,7 @@ public class main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws SocketException {
+    public void start(Stage stage) throws SocketException, UnknownHostException {
         view = new View();
         model = new Model();
         this.stage = stage;
@@ -47,7 +47,7 @@ public class main extends Application {
         view.pane.getChildren().addAll(
                 model.currentPosition.getMarker(),
                 model.targetPosition.getMarker(),
-                model.targetTrajectory.getTrajectoryLine());
+                model.targetTrajectory.getTrajectory(model.stageArea.getPixelRatio()));
 
 
         view.xPositionDisplay.textProperty().bind(model.currentPosition.getX().positionProperty().asString());
@@ -56,26 +56,42 @@ public class main extends Application {
             model.currentPosition.setUpdated(false);
         });
 
-        view.addLinearTarget.setOnAction(e -> {
-            //TODO reset position
+/*
+        view.addLinearTargetBtn.setOnAction(e -> {
+            //TODO: validate that current heading matches trajectory heading.
+
             model.setTargetPosition(
                     Integer.parseInt(view.xPositionEntry.getText()) * INCHES_TO_MICRONS,
                     Integer.parseInt(view.yPositionEntry.getText()) * INCHES_TO_MICRONS,
                     0,
                     model.currentPosition.getX().getAngularPosition());
             model.targetPosition.updatePosition(model.stageArea.getPixelRatio());
-            model.targetTrajectory.updateTrajectory(model.currentPosition, model.targetPosition, model.stageArea.getPixelRatio());
+            model.targetTrajectory.updateTrajectory(model.currentPosition, model.targetPosition, model.stageArea.getPixelRatio(),
+                    Double.parseDouble(view.totalTimeEntry.getText()),
+                    Double.parseDouble(view.accelerationTimeEntry.getText()),
+                    Double.parseDouble(view.decelerationTimeEntry.getText()));
         });
+*/
 
-        view.addRotationalTarget.setOnAction(e -> {
-            //TODO reset position
+        view.addRotationalTargetBtn.setOnAction(e -> {
             model.setTargetPosition(
-                    model.currentPosition.getX().getPosition(),
-                    model.currentPosition.getY().getPosition(),
+                    Integer.parseInt(view.xPositionEntry.getText()) * INCHES_TO_MICRONS,
+                    Integer.parseInt(view.yPositionEntry.getText()) * INCHES_TO_MICRONS,
                     0,
                     (int) Double.parseDouble(view.headingEntry.getText()) * DEGREES_TO_MILLIDEGREES);
             model.targetPosition.updatePosition(model.stageArea.getPixelRatio());
-            model.targetTrajectory.updateTrajectory(model.currentPosition, model.targetPosition, model.stageArea.getPixelRatio());
+            model.targetTrajectory.updateTrajectory(model.currentPosition, model.targetPosition, model.stageArea.getPixelRatio(),
+                    Double.parseDouble(view.totalTimeEntry.getText()),
+                    Double.parseDouble(view.accelerationTimeEntry.getText()),
+                    Double.parseDouble(view.decelerationTimeEntry.getText()));
+        });
+
+        view.goToTargetBtn.setOnAction(e -> {
+            try {
+                model.goToTarget();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         });
 /*            if(view.xPositionEntry.getText().isEmpty() &&
                     view.yPositionEntry.getText().isEmpty()) {

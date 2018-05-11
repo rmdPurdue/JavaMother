@@ -4,10 +4,14 @@ import Location.Trajectory;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
+import com.illposed.osc.OSCPortOut;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +22,12 @@ public class Model {
     public Position targetPosition = new Position(Color.GREEN);
     public StageArea stageArea = new StageArea();
     Trajectory targetTrajectory = new Trajectory(currentPosition, targetPosition, stageArea.getPixelRatio());
+
+    InetAddress outgoingAddress = InetAddress.getByName("192.168.1.2");
+    int outgoingPort = 8000;
+
+    public Model() throws UnknownHostException {
+    }
 
     public void Model() {
     }
@@ -80,6 +90,54 @@ public class Model {
         targetPosition.getY().setPosition(y);
         targetPosition.getZ().setPosition(z);
         targetPosition.getX().setAngularPosition(heading);
+    }
+
+    public void goToTarget() throws IOException {
+        /*
+        OSCMessage outgoingMessage = new OSCMessage();
+        outgoingMessage.setAddress("/izzy/target");
+        outgoingMessage.addArgument(targetPosition.getX().getPosition());
+        outgoingMessage.addArgument(targetPosition.getY().getPosition());
+        outgoingMessage.addArgument(targetPosition.getZ().getPosition());
+
+        outgoingMessage.addArgument(targetPosition.getX().getVelocity());
+        outgoingMessage.addArgument(targetPosition.getY().getVelocity());
+        outgoingMessage.addArgument(targetPosition.getZ().getVelocity());
+
+        outgoingMessage.addArgument(targetPosition.getX().getAcceleration());
+        outgoingMessage.addArgument(targetPosition.getY().getAcceleration());
+        outgoingMessage.addArgument(targetPosition.getZ().getAcceleration());
+
+        outgoingMessage.addArgument(targetPosition.getX().getAngularPosition());
+        outgoingMessage.addArgument(targetPosition.getY().getAngularPosition());
+        outgoingMessage.addArgument(targetPosition.getZ().getAngularPosition());
+
+        outgoingMessage.addArgument(targetPosition.getX().getAngularVelocity());
+        outgoingMessage.addArgument(targetPosition.getY().getAngularVelocity());
+        outgoingMessage.addArgument(targetPosition.getZ().getAngularVelocity());
+
+        outgoingMessage.addArgument(targetPosition.getX().getAngularAcceleration());
+        outgoingMessage.addArgument(targetPosition.getY().getAngularAcceleration());
+        outgoingMessage.addArgument(targetPosition.getZ().getAngularAcceleration());
+        OSCPortOut sender = new OSCPortOut(outgoingAddress, outgoingPort);
+        sender.send(outgoingMessage);
+        sender.close();
+        */
+        targetTrajectory.calculateMotionProfileCubic();
+
+        OSCMessage outgoingMessage = new OSCMessage();
+        outgoingMessage.setAddress("/izzy/linear_move");
+        outgoingMessage.addArgument(targetTrajectory.getTotalTime());
+        outgoingMessage.addArgument(targetTrajectory.getTotalDistance());
+        outgoingMessage.addArgument(targetTrajectory.getAccelerationTime());
+        outgoingMessage.addArgument(targetTrajectory.getFinalAccelerationPosition());
+        outgoingMessage.addArgument(targetTrajectory.getDecelerationTime());
+        outgoingMessage.addArgument(targetTrajectory.getInitialDecelerationPosition());
+        outgoingMessage.addArgument(targetTrajectory.getMaxVelocity());
+        OSCPortOut sender = new OSCPortOut(outgoingAddress, outgoingPort);
+        sender.send(outgoingMessage);
+        sender.close();
+
     }
 
 }
