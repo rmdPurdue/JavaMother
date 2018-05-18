@@ -1,4 +1,6 @@
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -56,6 +58,22 @@ public class main extends Application {
             model.currentPosition.setUpdated(false);
         });
 
+        view.chooseControl1Point.setOnAction(e -> {
+            model.targetTrajectory.setTrajectoryControlPoints(1,2,3,4);
+            /*
+            view.pane.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
+                view.controlX1Entry.setText(Double.toString(event.getX()));
+                view.controlX2Entry.setText(Double.toString(event.getY()));
+            });
+
+            view.pane.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+                System.out.println("Stop listening.");
+            });
+            */
+
+        });
+
+
 /*
         view.addLinearTargetBtn.setOnAction(e -> {
             //TODO: validate that current heading matches trajectory heading.
@@ -73,7 +91,7 @@ public class main extends Application {
         });
 */
 
-        view.addRotationalTargetBtn.setOnAction(e -> {
+        view.addTargetBtn.setOnAction(e -> {
             model.setTargetPosition(
                     Integer.parseInt(view.xPositionEntry.getText()) * INCHES_TO_MICRONS,
                     Integer.parseInt(view.yPositionEntry.getText()) * INCHES_TO_MICRONS,

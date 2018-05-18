@@ -11,6 +11,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.*;
+import javafx.scene.text.Font;
+
+import java.awt.*;
 
 public class View {
     public Scene scene;
@@ -37,11 +40,20 @@ public class View {
     TextField xPositionEntry = new TextField();
     TextField yPositionEntry = new TextField();
     TextField headingEntry = new TextField();
+    TextField controlX1Entry = new TextField();
+    TextField controlY1Entry = new TextField();
+    TextField controlX2Entry = new TextField();
+    TextField controlY2Entry = new TextField();
+
+    Button chooseControl1Point = new Button("Choose Point");
+    Button chooseControl2Point = new Button("Choose Point");
+    Button setControl1Point = new Button("Set Point");
+    Button setControl2Point = new Button("Set Point");
+
     TextField totalTimeEntry = new TextField();
     TextField accelerationTimeEntry = new TextField();
     TextField decelerationTimeEntry = new TextField();
-    Button addLinearTargetBtn = new Button("Add Target");
-    Button addRotationalTargetBtn = new Button("Add Target");
+    Button addTargetBtn = new Button("Add Target");
     Button goToTargetBtn = new Button("Go to Target");
 
     public int centerlineX;
@@ -53,8 +65,9 @@ public class View {
     Pane pane = new Pane();
 
     public View() {
+
         VBox header = makeHeader();
-        VBox statusFields = makeSatusFields();
+        VBox statusFields = makeStatusFields();
         VBox targetArea = makeTargetArea();
 
         BorderPane window = new BorderPane();
@@ -62,6 +75,7 @@ public class View {
         window.setLeft(statusFields);
         window.setCenter(targetArea);
         this.scene = new Scene(window);
+
     }
 
     private VBox makeHeader() {
@@ -77,7 +91,7 @@ public class View {
         return header;
     }
 
-    private VBox makeSatusFields() {
+    private VBox makeStatusFields() {
         Font statusFont = new Font("Arial",12);
         Font statusLabelFont = new Font("Arial",12);
 
@@ -234,8 +248,7 @@ public class View {
 
         pane.getChildren().add(backgroundCanvas);
 
-        Label linearMoveLabel = new Label("Linear Move");
-        Label rotationalMoveLabel = new Label("Rotational Move");
+        Label newMoveLabel = new Label("New Move");
         Label newXPositionLabel = new Label("X Position:");
         Label newYPositionLabel = new Label("Y Position:");
         Label newTotalTime = new Label("Total move time: ");
@@ -243,20 +256,23 @@ public class View {
         Label newDecelerationTime = new Label("Total deceleration time: ");
         Label newHeadingLabel = new Label("Heading:");
 
-        GridPane targetLinearPositionFields = new GridPane();
-        targetLinearPositionFields.add(linearMoveLabel,0,0,2,1);
-        targetLinearPositionFields.add(newXPositionLabel,0,1);
-        targetLinearPositionFields.add(xPositionEntry,1,1);
-        targetLinearPositionFields.add(newYPositionLabel,0,2);
-        targetLinearPositionFields.add(yPositionEntry,1,2);
-//        targetLinearPositionFields.add(addLinearTargetBtn,1,3);
+        GridPane targetPositionFields = new GridPane();
+        targetPositionFields.add(newMoveLabel,0,0,2,1);
+        targetPositionFields.add(newXPositionLabel,0,1);
+        targetPositionFields.add(xPositionEntry,1,1);
+        targetPositionFields.add(newYPositionLabel,0,2);
+        targetPositionFields.add(yPositionEntry,1,2);
+        targetPositionFields.add(newHeadingLabel, 0, 3);
+        targetPositionFields.add(headingEntry,1,3);
+        targetPositionFields.add(addTargetBtn,1,4);
 
-        GridPane targetRotationalPositionFields = new GridPane();
-
-        targetRotationalPositionFields.add(rotationalMoveLabel, 0, 0, 2, 1);
-        targetRotationalPositionFields.add(newHeadingLabel, 0, 1);
-        targetRotationalPositionFields.add(headingEntry,1,1);
-        targetRotationalPositionFields.add(addRotationalTargetBtn,1,2);
+        GridPane targetBezierPointFields = new GridPane();
+        targetBezierPointFields.add(controlX1Entry,0,0);
+        targetBezierPointFields.add(controlY1Entry,1,0);
+        targetBezierPointFields.add(chooseControl1Point,2,0);
+        targetBezierPointFields.add(controlX2Entry,0,1);
+        targetBezierPointFields.add(controlY2Entry,1,1);
+        targetBezierPointFields.add(chooseControl2Point,2,1);
 
         GridPane timeFields = new GridPane();
         timeFields.add(newTotalTime, 0, 0);
@@ -267,15 +283,15 @@ public class View {
         timeFields.add(decelerationTimeEntry,1,2);
         timeFields.add(goToTargetBtn,1,3);
 
-        HBox targetPositionFields = new HBox();
-        targetPositionFields.setPadding(new Insets(10,10,10,10));
-        targetPositionFields.setSpacing(20);
-        targetPositionFields.getChildren().addAll(targetLinearPositionFields, targetRotationalPositionFields, timeFields);
+        HBox targetPositionEntry = new HBox();
+        targetPositionEntry.setPadding(new Insets(10,10,10,10));
+        targetPositionEntry.setSpacing(20);
+        targetPositionEntry.getChildren().addAll(targetPositionFields, targetBezierPointFields, timeFields);
 
         VBox targetArea = new VBox();
         targetArea.setPadding(new Insets(20,20,20,20));
         targetArea.setSpacing(10);
-        targetArea.getChildren().addAll(pane, targetPositionFields);
+        targetArea.getChildren().addAll(pane, targetPositionEntry);
 
         return targetArea;
     }
@@ -300,5 +316,6 @@ public class View {
 
         return null;
     }
+
 
 }

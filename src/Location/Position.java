@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 
 public class Position {
 
@@ -23,7 +24,7 @@ public class Position {
         this.marker = new Group();
         this.position = new Circle(0,0,4, color);
         this.heading = new Polygon();
-        this.heading.getPoints().addAll(-10.0, -16.0, 10.0, -16.0, 0.0, 0.0, 0.0, 0.0);
+        this.heading.getPoints().addAll(20.0, -8.0, 20.0, 8.0, 0.0, 0.0);
         this.heading.setFill(color);
         this.heading.setOpacity(0.25);
         this.marker.getChildren().addAll(position, heading);
@@ -85,27 +86,16 @@ public class Position {
 
 
     public Group updatePosition(double pixelRatio) {
-        /*
-        double xx = this.marker.getLocalToSceneTransform().getMxx();
-        double xy = this.marker.getLocalToSceneTransform().getMxy();
-        double angle = Math.atan2(-xy, xx);
-        angle = Math.toDegrees(angle);
-        angle = angle < 0 ? angle + 360 : angle;
 
-        this.marker.getTransforms().add(new Rotate(
-                (getX().getAngularPosition() / 1000) - angle,
-                (getX().getPosition() / pixelRatio) + translationX,
-                translationY - (getY().getPosition() / pixelRatio)));
-                */
         this.marker.setRotate(getX().getAngularPosition() / 1000);
-        double xRotationTranslation = Math.sin(Math.toRadians(getX().getAngularPosition() / 1000)) * 6;
-        double translationHypotenuse = xRotationTranslation / Math.cos(Math.toRadians(getX().getAngularPosition() / (1000 * 2.0)));
-        double yRotationTranslation = Math.sin(Math.toRadians(getX().getAngularPosition() / (1000 * 2.0))) * translationHypotenuse;
+        double translationHypotenuse = Math.sin(Math.toRadians(getX().getAngularPosition() / (1000 * 2.0))) * 16.0;
+        double xRotationTranslation = - Math.sin(Math.toRadians(getX().getAngularPosition() / (1000 * 2.0))) * translationHypotenuse;
+        double yRotationTranslation = Math.cos(Math.toRadians(getX().getAngularPosition() / (1000 * 2.0))) * translationHypotenuse;
 
         this.position.setTranslateX((getX().getPosition() / pixelRatio) + xRotationTranslation + translationX);
         this.heading.setTranslateX((getX().getPosition() / pixelRatio) + xRotationTranslation + translationX);
         this.position.setTranslateY(yRotationTranslation + translationY - (getY().getPosition() / pixelRatio));
-        this.heading.setTranslateY(yRotationTranslation + translationY- (getY().getPosition() / pixelRatio));
+        this.heading.setTranslateY(yRotationTranslation + translationY - (getY().getPosition() / pixelRatio));
 
         return marker;
     }
