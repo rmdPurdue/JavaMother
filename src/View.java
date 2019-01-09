@@ -45,10 +45,10 @@ public class View {
     TextField controlX2Entry = new TextField();
     TextField controlY2Entry = new TextField();
 
-    Button chooseControl1Point = new Button("Choose Point");
-    Button chooseControl2Point = new Button("Choose Point");
-    Button setControl1Point = new Button("Set Point");
-    Button setControl2Point = new Button("Set Point");
+//    Button chooseControl1Point = new Button("Choose Point");
+//    Button chooseControl2Point = new Button("Choose Point");
+//    Button setControl1Point = new Button("Set Point");
+//    Button setControl2Point = new Button("Set Point");
 
     TextField totalTimeEntry = new TextField();
     TextField accelerationTimeEntry = new TextField();
@@ -266,13 +266,13 @@ public class View {
         targetPositionFields.add(headingEntry,1,3);
         targetPositionFields.add(addTargetBtn,1,4);
 
-        GridPane targetBezierPointFields = new GridPane();
-        targetBezierPointFields.add(controlX1Entry,0,0);
-        targetBezierPointFields.add(controlY1Entry,1,0);
-        targetBezierPointFields.add(chooseControl1Point,2,0);
-        targetBezierPointFields.add(controlX2Entry,0,1);
-        targetBezierPointFields.add(controlY2Entry,1,1);
-        targetBezierPointFields.add(chooseControl2Point,2,1);
+//        GridPane targetBezierPointFields = new GridPane();
+//        targetBezierPointFields.add(controlX1Entry,0,0);
+//        targetBezierPointFields.add(controlY1Entry,1,0);
+//        targetBezierPointFields.add(chooseControl1Point,2,0);
+//        targetBezierPointFields.add(controlX2Entry,0,1);
+//        targetBezierPointFields.add(controlY2Entry,1,1);
+//        targetBezierPointFields.add(chooseControl2Point,2,1);
 
         GridPane timeFields = new GridPane();
         timeFields.add(newTotalTime, 0, 0);
@@ -286,7 +286,7 @@ public class View {
         HBox targetPositionEntry = new HBox();
         targetPositionEntry.setPadding(new Insets(10,10,10,10));
         targetPositionEntry.setSpacing(20);
-        targetPositionEntry.getChildren().addAll(targetPositionFields, targetBezierPointFields, timeFields);
+        targetPositionEntry.getChildren().addAll(targetPositionFields, timeFields);
 
         VBox targetArea = new VBox();
         targetArea.setPadding(new Insets(20,20,20,20));

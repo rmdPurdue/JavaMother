@@ -1,5 +1,6 @@
 package Location;
 
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
@@ -12,6 +13,7 @@ public class Trajectory {
     private Position endPosition;
     private Line trajectory;
     private Path trajectoryPath;
+    private Group trajectoryCurve;
     private double totalTime;
     private double totalDistance;
     private double accelerationTime;
@@ -31,12 +33,14 @@ public class Trajectory {
     private double endVelocityX;
     private double startVelocityY;
     private double endVelocityY;
+    CubicCurve curve = new CubicCurve();
 
     public Trajectory(Position startPosition, Position endPosition, double pixelRatio) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         this.trajectory = new Line();
         this.trajectoryPath = new Path();
+        this.trajectoryCurve = new Group();
         this.trajectory.setStartX((this.startPosition.getX().getPosition() / pixelRatio) + this.startPosition.getTranslationX());
         this.trajectory.setStartY(this.startPosition.getTranslationY() - (this.startPosition.getY().getPosition() / pixelRatio));
         this.trajectory.setEndX((this.endPosition.getX().getPosition() / pixelRatio) + this.startPosition.getTranslationX());
@@ -57,95 +61,173 @@ public class Trajectory {
         this.decelerationTime = decelerationTime;
         this.trajectory.setStroke(Color.GREEN);
 
-        drawCurve(pixelRatio);
+        drawCurve2(pixelRatio);
 
-//        calculateMotionProfileCubic();
-
-        Function<Double, Double> fX = x -> 1/6 * aX * Math.pow(x, 2) + bX * x + startVelocityX;
-        Function<Double, Double> fY = x -> 1/6 * aY * Math.pow(x, 2) + bY * x + startVelocityY;
-        trajectoryPath.setStroke(Color.ORANGE);
-        trajectoryPath.setStrokeWidth(2);
-
-        /*
-        double time = 0;
-        double resultX = fX.apply(time);
-        double resultY = fY.apply(time);
-
-        trajectoryPath.getElements().add(new MoveTo(resultX / pixelRatio, resultY / pixelRatio));
-        System.out.println(resultX / pixelRatio + ", " + resultY / pixelRatio);
-
-        time += 0.1;
-        while(time < totalTime) {
-            resultX = fX.apply(time);
-            resultY = fY.apply(time);
-            trajectoryPath.getElements().add(new LineTo(resultX / pixelRatio, resultY / pixelRatio));
-            System.out.println(resultX / pixelRatio + ", " + resultY / pixelRatio);
-            time += 0.1;
-        }
-*/
+//        Function<Double, Double> fX = x -> 1/6 * aX * Math.pow(x, 2) + bX * x + startVelocityX;
+//        Function<Double, Double> fY = x -> 1/6 * aY * Math.pow(x, 2) + bY * x + startVelocityY;
+//        trajectoryPath.setStroke(Color.ORANGE);
+//        trajectoryPath.setStrokeWidth(2);
     }
 
     public Line getTrajectoryLine() {
         return this.trajectory;
     }
 
-    public Path getTrajectory(double pixelRatio) {
+    public Group getTrajectory() {
 
-        return trajectoryPath;
+        return trajectoryCurve;
     }
 
-    public void calculateMotionProfileCubic() {
-        int startX = this.startPosition.getX().getPosition();
-        int startY = this.startPosition.getY().getPosition();
-        int endX = this.endPosition.getX().getPosition();
-        int endY = this.endPosition.getY().getPosition();
+    public void drawCurve2(double pixelRatio) {
 
-        int startAngle = this.startPosition.getX().getAngularPosition();
-        int startAngleDegrees = startAngle / 1000;
-        double startAngleRadians = Math.toRadians(startAngleDegrees);
-        int endAngle = this.endPosition.getX().getAngularPosition();
-        int endAngleDegrees = endAngle / 1000;
-        double endAngleRadians = Math.toRadians(endAngleDegrees);
+        curve = createStartingCurve(pixelRatio);
 
-        double startVelocity = 0;
-        this.startVelocityX = startVelocity * (Math.cos(startAngleRadians));
-        this.startVelocityY = startVelocity * (Math.sin(startAngleRadians));
+        Line controlLine1 = new BoundLine(curve.controlX1Property(), curve.controlY1Property(), curve.startXProperty(), curve.startYProperty());
+        Line controlLine2 = new BoundLine(curve.controlX2Property(), curve.controlY2Property(), curve.endXProperty(),   curve.endYProperty());
 
-        double endVelocity = 0;
-        this.endVelocityX = endVelocity * (Math.cos(endAngleRadians));
-        this.endVelocityY = endVelocity * (Math.sin(endAngleRadians));
+        Anchor start    = new Anchor(Color.PALEGREEN, curve.startXProperty(),    curve.startYProperty());
+        Anchor control1 = new Anchor(Color.GOLD,      curve.controlX1Property(), curve.controlY1Property());
+        Anchor control2 = new Anchor(Color.GOLDENROD, curve.controlX2Property(), curve.controlY2Property());
+        Anchor end      = new Anchor(Color.TOMATO,    curve.endXProperty(),      curve.endYProperty());
 
-        double startTime = 0;
-        double endTime = startTime + this.totalTime;
+        this.trajectoryCurve.getChildren().add(controlLine1);
+        this.trajectoryCurve.getChildren().add(controlLine2);
+        this.trajectoryCurve.getChildren().add(curve);
+        this.trajectoryCurve.getChildren().add(start);
+        this.trajectoryCurve.getChildren().add(control1);
+        this.trajectoryCurve.getChildren().add(control2);
+        this.trajectoryCurve.getChildren().add(end);
+    }
 
-        this.aX = 6 * ((endVelocityX + startVelocityX) * (endTime - startTime) - (2 * (endX - startX))) / (Math.pow(endTime - startTime, 3));
-        this.bX = -2 * ((endVelocityX + 2 * startVelocityX) * (endTime - startTime) - (3 * (endX - startX))) / Math.pow(endTime - startTime, 2);
+    private CubicCurve createStartingCurve(double pixelRatio) {
+        double startXinPixels = this.startPosition.getX().getPosition() / pixelRatio;
+        double finalXinPixels = this.endPosition.getX().getPosition() / pixelRatio;
+        double startYinPixels = this.startPosition.getY().getPosition() / pixelRatio;
+        double finalYinPixels = this.endPosition.getY().getPosition() / pixelRatio;
+        double startXinPixelsTranslated = startXinPixels + this.startPosition.getTranslationX();
+        double finalXinPixelsTranslated = finalXinPixels + this.endPosition.getTranslationX();
+        double startYinPixelsTranslated = this.startPosition.getTranslationY() - startYinPixels;
+        double finalYinPixelsTranslated = this.endPosition.getTranslationY() - finalYinPixels;
+        double startAngleDegrees = this.startPosition.getX().getAngularPosition() / 1000;
+        double finalAngleDegrees = this.endPosition.getX().getAngularPosition() / 1000;
+        System.out.println(startAngleDegrees + " " + finalAngleDegrees);
 
-        this.aY = 6 * ((endVelocityY + startVelocityY) * (endTime - startTime) - (2 * (endY - startY))) / (Math.pow(endTime - startTime, 3));
-        this.bY = -2 * ((endVelocityY + 2 * startVelocityY) * (endTime - startTime) - (3 * (endY - startY))) / Math.pow(endTime - startTime, 2);
+        CubicCurve curve = new CubicCurve();
+
+        curve.setStartX(startXinPixelsTranslated);
+        curve.setStartY(startYinPixelsTranslated);
+
+        curve.setControlX1(50 * Math.cos(Math.toRadians(startAngleDegrees)) + startXinPixelsTranslated);
+        curve.setControlY1(50 * Math.sin(Math.toRadians(startAngleDegrees)) + startYinPixelsTranslated);
+        curve.setControlX2(50 * Math.cos(Math.toRadians(finalAngleDegrees)) + finalXinPixelsTranslated);
+        curve.setControlY2(50 + Math.sin(Math.toRadians(finalAngleDegrees)) + finalYinPixelsTranslated);
+
+        System.out.println(curve.getControlX1() + " " + curve.getControlY1() + " " + curve.getControlX2() + " " + curve.getControlY2());
+
+        curve.setEndX(finalXinPixelsTranslated);
+        curve.setEndY(finalYinPixelsTranslated);
+        curve.setStroke(Color.FORESTGREEN);
+        curve.setStrokeWidth(4);
+        curve.setStrokeLineCap(StrokeLineCap.ROUND);
+        curve.setFill(Color.CORNSILK.deriveColor(0, 1.2, 1, 0.6));
+        return curve;
+    }
+
+    public void setTrajectoryControlPoints(double x1, double y1, double x2, double y2) {
+        System.out.println(this.trajectoryPath.getElements().get(1).getClass());
+    }
+
+    public double getMaxVelocity() {
+        return maxVelocity;
+    }
+
+    public double getAccelerationRate() {
+
+        return accelerationRate;
+    }
+
+    public double getFinalAccelerationPosition() {
+        return finalAccelerationPosition;
+    }
+
+    public double getDecelerationRate() {
+        return decelerationRate;
+    }
+
+    public double getInitialDecelerationPosition() {
+        return initialDecelerationPosition;
+    }
+
+    public double getTotalTime() {
+
+        return totalTime;
+    }
+
+    public double getTotalDistance() {
+        return totalDistance;
+    }
+
+    public double getAccelerationTime() {
+        return accelerationTime;
+    }
+
+    public double getDecelerationTime() {
+        return decelerationTime;
+    }
+
+// OLD STUFF
+public void calculateMotionProfileCubic() {
+    int startX = this.startPosition.getX().getPosition();
+    int startY = this.startPosition.getY().getPosition();
+    int endX = this.endPosition.getX().getPosition();
+    int endY = this.endPosition.getY().getPosition();
+
+    int startAngle = this.startPosition.getX().getAngularPosition();
+    int startAngleDegrees = startAngle / 1000;
+    double startAngleRadians = Math.toRadians(startAngleDegrees);
+    int endAngle = this.endPosition.getX().getAngularPosition();
+    int endAngleDegrees = endAngle / 1000;
+    double endAngleRadians = Math.toRadians(endAngleDegrees);
+
+    double startVelocity = 0;
+    this.startVelocityX = startVelocity * (Math.cos(startAngleRadians));
+    this.startVelocityY = startVelocity * (Math.sin(startAngleRadians));
+
+    double endVelocity = 0;
+    this.endVelocityX = endVelocity * (Math.cos(endAngleRadians));
+    this.endVelocityY = endVelocity * (Math.sin(endAngleRadians));
+
+    double startTime = 0;
+    double endTime = startTime + this.totalTime;
+
+    this.aX = 6 * ((endVelocityX + startVelocityX) * (endTime - startTime) - (2 * (endX - startX))) / (Math.pow(endTime - startTime, 3));
+    this.bX = -2 * ((endVelocityX + 2 * startVelocityX) * (endTime - startTime) - (3 * (endX - startX))) / Math.pow(endTime - startTime, 2);
+
+    this.aY = 6 * ((endVelocityY + startVelocityY) * (endTime - startTime) - (2 * (endY - startY))) / (Math.pow(endTime - startTime, 3));
+    this.bY = -2 * ((endVelocityY + 2 * startVelocityY) * (endTime - startTime) - (3 * (endY - startY))) / Math.pow(endTime - startTime, 2);
 /*
         System.out.println(aX + ", " + bX);
         System.out.println(aY + ", " + bY);
         System.out.println("------------------");
 */
-        // from these, we can calculate any (x, y) position and (vX, vY) velocity based on time t:
-        // vX(t) = 1/2 aX (t - t0)^2 + bX (t - t0) + vX0
-        // vY(t) = 1/2 aY (t - t0)^2 + bY (t - t0) + vY0
-        // x(t) = 1/6 aX (t - t0)^3 + 1/2 bX (t - t0)^2 + vX0 (t - t0) + x0
-        // y(t) = 1/6 aY (t - t0)^3 + 1/2 bY (t - t0)^2 + vY0 (t - t0) + y0
+    // from these, we can calculate any (x, y) position and (vX, vY) velocity based on time t:
+    // vX(t) = 1/2 aX (t - t0)^2 + bX (t - t0) + vX0
+    // vY(t) = 1/2 aY (t - t0)^2 + bY (t - t0) + vY0
+    // x(t) = 1/6 aX (t - t0)^3 + 1/2 bX (t - t0)^2 + vX0 (t - t0) + x0
+    // y(t) = 1/6 aY (t - t0)^3 + 1/2 bY (t - t0)^2 + vY0 (t - t0) + y0
 
-        // we can calculate tangential linear speed (s) based on time t:
-        // s(t) = sqrt(vX(t) ^ 2 + vY(t) ^2 )
+    // we can calculate tangential linear speed (s) based on time t:
+    // s(t) = sqrt(vX(t) ^ 2 + vY(t) ^2 )
 
-        // we can calculate heading (theta) based on time t:
-        // theta(t) = arctan(vX(t) / vY(t))
+    // we can calculate heading (theta) based on time t:
+    // theta(t) = arctan(vX(t) / vY(t))
 
-        // we can calculate angular velocity (omega) based on time t:
-        // omega(t) = ((ay t + bY) vX(t) - (aX t + bX) vY(t)) / (vX(t)^2 + vY(t)^2)
+    // we can calculate angular velocity (omega) based on time t:
+    // omega(t) = ((ay t + bY) vX(t) - (aX t + bX) vY(t)) / (vX(t)^2 + vY(t)^2)
 
-        double arcLength = integrate(startTime, endTime, aX, bX, startVelocityX, aY, bY, startVelocityY, totalTime);
+    double arcLength = integrate(startTime, endTime, aX, bX, startVelocityX, aY, bY, startVelocityY, totalTime);
 
-    }
+}
 
     private void drawCurve(double pixelRatio) {
 
@@ -205,45 +287,5 @@ public class Trajectory {
         this.trajectoryPath.getElements().add(curveTo);
     }
 
-    public void setTrajectoryControlPoints(double x1, double y1, double x2, double y2) {
-        System.out.println(this.trajectoryPath.getElements().get(1).getClass());
-    }
 
-    public double getMaxVelocity() {
-        return maxVelocity;
-    }
-
-    public double getAccelerationRate() {
-
-        return accelerationRate;
-    }
-
-    public double getFinalAccelerationPosition() {
-        return finalAccelerationPosition;
-    }
-
-    public double getDecelerationRate() {
-        return decelerationRate;
-    }
-
-    public double getInitialDecelerationPosition() {
-        return initialDecelerationPosition;
-    }
-
-    public double getTotalTime() {
-
-        return totalTime;
-    }
-
-    public double getTotalDistance() {
-        return totalDistance;
-    }
-
-    public double getAccelerationTime() {
-        return accelerationTime;
-    }
-
-    public double getDecelerationTime() {
-        return decelerationTime;
-    }
 }

@@ -1,11 +1,8 @@
 import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import mvc.Model;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class main extends Application {
     private int INCHES_TO_MICRONS = 25400;
@@ -19,19 +16,21 @@ public class main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws SocketException, UnknownHostException {
+    public void start(Stage stage) throws IOException, InterruptedException {
         view = new View();
         model = new Model();
         this.stage = stage;
 
         hookupEvents();
 
-        this.stage.setTitle("Izzy");
-        this.stage.sizeToScene();
-        this.stage.setScene(view.scene);
-        this.stage.setResizable(false);
-        this.stage.show();
+        //this.stage.setTitle("Izzy");
+        //this.stage.sizeToScene();
+        //this.stage.setScene(view.scene);
+        //this.stage.setResizable(false);
+        //this.stage.show();
         model.startListening();
+        Thread.sleep(5000);
+        model.goToTarget();
     }
 
     private void hookupEvents() {
@@ -49,7 +48,7 @@ public class main extends Application {
         view.pane.getChildren().addAll(
                 model.currentPosition.getMarker(),
                 model.targetPosition.getMarker(),
-                model.targetTrajectory.getTrajectory(model.stageArea.getPixelRatio()));
+                model.targetTrajectory.getTrajectory());
 
 
         view.xPositionDisplay.textProperty().bind(model.currentPosition.getX().positionProperty().asString());
@@ -58,8 +57,8 @@ public class main extends Application {
             model.currentPosition.setUpdated(false);
         });
 
-        view.chooseControl1Point.setOnAction(e -> {
-            model.targetTrajectory.setTrajectoryControlPoints(1,2,3,4);
+//        view.chooseControl1Point.setOnAction(e -> {
+//            model.targetTrajectory.setTrajectoryControlPoints(1,2,3,4);
             /*
             view.pane.addEventHandler(MouseEvent.MOUSE_MOVED, event -> {
                 view.controlX1Entry.setText(Double.toString(event.getX()));
@@ -71,7 +70,7 @@ public class main extends Application {
             });
             */
 
-        });
+//        });
 
 
 /*
@@ -90,6 +89,8 @@ public class main extends Application {
                     Double.parseDouble(view.decelerationTimeEntry.getText()));
         });
 */
+
+// TODO: Link the ending control line to the angle of the final position. If the line changes, the angle of the position changes.
 
         view.addTargetBtn.setOnAction(e -> {
             model.setTargetPosition(

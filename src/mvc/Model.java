@@ -1,3 +1,5 @@
+package mvc;
+
 import Location.Position;
 import Location.StageArea;
 import Location.Trajectory;
@@ -5,15 +7,23 @@ import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import com.illposed.osc.OSCPortOut;
+import comms.HeartBeat;
+import comms.HeartBeatResponder;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
-
+import util.IZZY;
+import util.Mother;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static comms.PortEnumerations.*;
+import static util.OSCAddresses.*;
 
 public class Model {
 
@@ -21,19 +31,28 @@ public class Model {
     public Position centerPosition = new Position(Color.BLUE);
     public Position targetPosition = new Position(Color.GREEN);
     public StageArea stageArea = new StageArea();
-    Trajectory targetTrajectory = new Trajectory(currentPosition, targetPosition, stageArea.getPixelRatio());
+    public Trajectory targetTrajectory = new Trajectory(currentPosition, targetPosition, stageArea.getPixelRatio());
 
-    InetAddress outgoingAddress = InetAddress.getByName("192.168.1.2");
-    int outgoingPort = 8000;
+    private InetAddress outgoingAddress = InetAddress.getByName("10.101.1.3");
 
-    public Model() throws UnknownHostException {
-    }
+    private Mother mother = new Mother();
+    private HeartBeat heartBeat = new HeartBeat(mother);
+    private HeartBeatResponder heartBeatResponder = new HeartBeatResponder();
+    private ExecutorService executor = Executors.newFixedThreadPool(5);
 
-    public void Model() {
+    private static Scanner scanner = new Scanner( System.in );
+
+    public Model() throws IOException {
+        mother.setUUID(UUID.fromString("0a1821f3-4273-4f34-8be5-c167dd7669e2"));
+
+        // If I'm using UUIDs instead of MAC addresses, do I need this at all?
+        // selectNetworkInterface();
+
+        startHeartbeat();
     }
 
     public void startListening() throws SocketException {
-        OSCPortIn receiver = new OSCPortIn(8000);
+        OSCPortIn receiver = new OSCPortIn(OSC_RECEIVE_PORT.getValue());
         OSCListener listener = (time, message) -> {
             if(Objects.equals(message.getAddress(), "/mother/status")) updateCurrentPosition(message);
         };
@@ -122,22 +141,83 @@ public class Model {
         OSCPortOut sender = new OSCPortOut(outgoingAddress, outgoingPort);
         sender.send(outgoingMessage);
         sender.close();
-        */
-        targetTrajectory.calculateMotionProfileCubic();
 
+        targetTrajectory.calculateMotionProfileCubic();
+    */
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/izzy/linear_move");
-        outgoingMessage.addArgument(targetTrajectory.getTotalTime());
-        outgoingMessage.addArgument(targetTrajectory.getTotalDistance());
-        outgoingMessage.addArgument(targetTrajectory.getAccelerationTime());
-        outgoingMessage.addArgument(targetTrajectory.getFinalAccelerationPosition());
-        outgoingMessage.addArgument(targetTrajectory.getDecelerationTime());
-        outgoingMessage.addArgument(targetTrajectory.getInitialDecelerationPosition());
-        outgoingMessage.addArgument(targetTrajectory.getMaxVelocity());
-        OSCPortOut sender = new OSCPortOut(outgoingAddress, outgoingPort);
+        outgoingMessage.setAddress(SIMPLE_MOVE.valueOf());
+        outgoingMessage.addArgument(10);
+        OSCPortOut sender = new OSCPortOut(outgoingAddress, OSC_SEND_PORT.getValue());
+        System.out.println("Sending forward message.");
         sender.send(outgoingMessage);
         sender.close();
 
+    }
+
+    private void selectNetworkInterface() throws SocketException {
+
+        // Make list of NICs
+        Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+        int i = 1;
+        ArrayList<NetworkInterface> networkInterfaces = new ArrayList<>();
+
+        for (NetworkInterface netint : Collections.list(nets)) {
+            if (netint.supportsMulticast() && netint.isUp()) {
+                networkInterfaces.add(netint);
+            }
+        }
+
+        // Display NICs menu
+        for (NetworkInterface networkInterface : networkInterfaces) {
+            System.out.println("Press " + i + " for:");
+            System.out.printf("Display name: %s\n", networkInterface.getDisplayName());
+            System.out.printf("Name: %s\n", networkInterface.getName());
+            Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+            for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                System.out.printf("InetAddress: %s\n", inetAddress);
+            }
+            System.out.printf("\n");
+            i++;
+        }
+
+        System.out.println("ArrayList length: " + networkInterfaces.size());
+
+        // Wait for user input
+        System.out.print("?>");
+        String input = scanner.nextLine();
+
+        // Set mother's NIC and update MAC address.
+        System.out.println("Selected interface details:");
+        System.out.printf("Display name: %s\n", networkInterfaces.get(Integer.parseInt(input)-1).getDisplayName());
+        System.out.printf("Name: %s\n", networkInterfaces.get(Integer.parseInt(input)-1).getName());
+        //mother.setNetInterface(networkInterfaces.get(Integer.parseInt(input)-1));
+
+    }
+
+    private void startHeartbeat() throws SocketException, UnknownHostException {
+        heartBeat.setSenderID(mother.getUUID());
+
+        heartBeatResponder.setListener(izzy -> {
+            //System.out.println("Got here.");
+            Iterator itr = mother.getIzzyUnits().iterator();
+            boolean exists = false;
+            while(itr.hasNext()) {
+                IZZY itrIzzy = (IZZY)itr.next();
+                if(itrIzzy.getUUID().equals(izzy.getUUID())) {
+                    itrIzzy.setStatus(izzy.getStatus());
+                    itrIzzy.setName(izzy.getName());
+                    exists = true;
+                }
+            }
+            if(!exists) mother.getIzzyUnits().add(izzy);
+        });
+
+        executor.submit(heartBeat);
+        executor.submit(heartBeatResponder);
+    }
+
+    private void stopHeartbeat() {
+        heartBeat.stopBeating();
     }
 
 }
