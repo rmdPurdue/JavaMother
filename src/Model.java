@@ -23,7 +23,7 @@ public class Model {
     public StageArea stageArea = new StageArea();
     Trajectory targetTrajectory = new Trajectory(currentPosition, targetPosition, stageArea.getPixelRatio());
 
-    InetAddress outgoingAddress = InetAddress.getByName("192.168.1.2");
+    InetAddress outgoingAddress = InetAddress.getByName("10.161.66.14");
     int outgoingPort = 8000;
 
     public Model() throws UnknownHostException {
@@ -33,12 +33,15 @@ public class Model {
     }
 
     public void startListening() throws SocketException {
-        OSCPortIn receiver = new OSCPortIn(8000);
+        OSCPortIn receiver = new OSCPortIn(8001);
         OSCListener listener = (time, message) -> {
-            if(Objects.equals(message.getAddress(), "/mother/status")) updateCurrentPosition(message);
+            System.out.println("Message received from IZZY!");
+            OSCParser(message);
         };
-
+        receiver.addListener("/mother", listener);
         receiver.addListener("/mother/status", listener);
+        receiver.addListener("/mother/units", listener);
+        receiver.addListener("/mother/LineFollow/Update", listener);
         receiver.startListening();
     }
 
@@ -140,4 +143,14 @@ public class Model {
 
     }
 
+    private void OSCParser(OSCMessage message){
+        String address = message.getAddress();
+
+        if(Objects.equals(address, "/mother/status")) {
+            updateCurrentPosition(message);
+        }else if(Objects.equals(address, "/mother/LineFollow/Update")){
+            System.out.println("Received line follow update!");
+            System.out.println(message.getArguments().indexOf(0));
+        }
+    }
 }
