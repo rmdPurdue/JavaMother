@@ -15,11 +15,12 @@ public class main extends Application {
     private Model model;
 
     public static void main(String[] args) {
+        System.out.println("Hello from mother!");
         Application.launch(args);
     }
 
     @Override
-    public void start(Stage stage) throws SocketException, UnknownHostException {
+    public void start(Stage stage) throws SocketException, UnknownHostException, IOException {
         view = new View();
         model = new Model();
         this.stage = stage;

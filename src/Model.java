@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Model {
-
+    public OSCPortIn receiver = null;
+    public OSCListener listener = null;
     public Position currentPosition = new Position(Color.RED);
     public Position centerPosition = new Position(Color.BLUE);
     public Position targetPosition = new Position(Color.GREEN);
@@ -32,17 +33,33 @@ public class Model {
     public void Model() {
     }
 
-    public void startListening() throws SocketException {
-        OSCPortIn receiver = new OSCPortIn(8001);
-        OSCListener listener = (time, message) -> {
+    public void startListening() throws SocketException, IOException {
+        receiver = new OSCPortIn(8001);
+        listener = (time, message) -> {
             System.out.println("Message received from IZZY!");
             OSCParser(message);
         };
-        receiver.addListener("/mother", listener);
+        receiver.startListening();
+        receiver.addListener("/helloWorld",listener);
         receiver.addListener("/mother/status", listener);
         receiver.addListener("/mother/units", listener);
         receiver.addListener("/mother/LineFollow/Update", listener);
-        receiver.startListening();
+        //receiver.startListening();
+        System.out.println("Mother is now listening for IZZY via OSC");
+        System.out.println();
+
+        /*OSCMessage outgoingMessage = new OSCMessage();
+        outgoingMessage.setAddress("/IZZY/LinearMove");
+        outgoingMessage.addArgument(5);
+        outgoingMessage.addArgument(-200);
+        OSCMessage outgoingMessage2 = new OSCMessage();
+        outgoingMessage2.setAddress("/IZZY/Units");
+        outgoingMessage2.addArgument(16);
+        outgoingMessage2.addArgument("rotations");
+        OSCPortOut sender = new OSCPortOut(outgoingAddress, outgoingPort);
+        //sender.send(outgoingMessage2);
+        sender.send(outgoingMessage);
+        sender.close();*/
     }
 
     public void setCenterPosition(int x, int y, int z) {
@@ -129,7 +146,7 @@ public class Model {
         targetTrajectory.calculateMotionProfileCubic();
 
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/izzy/linear_move");
+        outgoingMessage.setAddress("/IZZY/LinearMove");
         outgoingMessage.addArgument(targetTrajectory.getTotalTime());
         outgoingMessage.addArgument(targetTrajectory.getTotalDistance());
         outgoingMessage.addArgument(targetTrajectory.getAccelerationTime());
