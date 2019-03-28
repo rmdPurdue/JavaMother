@@ -42,7 +42,7 @@ public class Model {
         receiver.startListening();
         receiver.addListener("/helloWorld",listener);
         receiver.addListener("/mother/status", listener);
-        receiver.addListener("/mother/units", listener);
+        receiver.addListener("/mother/Units", listener);
         receiver.addListener("/mother/LineFollow/Update", listener);
         //receiver.startListening();
         System.out.println("Mother is now listening for IZZY via OSC");
