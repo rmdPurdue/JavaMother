@@ -20,10 +20,14 @@ import java.util.List;
 
 public class CurveMove {
 
-    private int size = 0;
-    private int totalDistance = 0;
+    private int size;
+    private int totalDistance;
     private List<CurvePoint> points;
 
+    CurveMove(){
+        this.size = 0;
+        this.totalDistance = 0;
+    }
     private class CurvePoint {
         private double x;
         private double y;
@@ -81,7 +85,7 @@ public class CurveMove {
     public OSCMessage generateMessage() {
         OSCMessage outgoingMessage = new OSCMessage();
         int i;
-        int tempAngle;
+        int tempAngle = this.points.get(0).angle;
         int runningDistance;
         if (this.size < 2) {
             System.out.println("ERROR, CurveMove needs at least 2 points to generate message");
@@ -93,12 +97,12 @@ public class CurveMove {
         outgoingMessage.addArgument(this.totalDistance);
         outgoingMessage.addArgument(this.size);
         //start adding points
-        //point 0
+        //point 0 which does not have a distance
         outgoingMessage.addArgument(this.points.get(0).angle);
         outgoingMessage.addArgument(0);
 
 
-        for (i = 1; i < this.size; i++) {
+        for (i = 1; i < this.size - 1; i++) {
             tempAngle = this.points.get(i).angle;
             tempAngle = tempAngle - this.points.get(i - 1).angle; // turn absolute angle into relative angle
 
@@ -113,6 +117,11 @@ public class CurveMove {
             runningDistance = runningDistance + this.points.get(i - 1).distance;
             outgoingMessage.addArgument(runningDistance); // add overall distance along move
         }
+
+        //add last point which does not have a turn
+        outgoingMessage.addArgument(0);
+        outgoingMessage.addArgument(this.totalDistance);
+
 
         return outgoingMessage;
     }
