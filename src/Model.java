@@ -24,7 +24,7 @@ public class Model {
     public StageArea stageArea = new StageArea();
     Trajectory targetTrajectory = new Trajectory(currentPosition, targetPosition, stageArea.getPixelRatio());
 
-    InetAddress outgoingAddress = InetAddress.getByName("10.161.66.14");
+    InetAddress outgoingAddress = InetAddress.getByName("192.168.2.4");
     int outgoingPort = 8000;
 
     public Model() throws UnknownHostException {
@@ -48,18 +48,38 @@ public class Model {
         System.out.println("Mother is now listening for IZZY via OSC");
         System.out.println();
 
-        /*OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/LinearMove");
+
+        CurveMove myMove = new CurveMove();
+        myMove.addPoint(0,0);
+        myMove.addPoint(0,20);
+        myMove.addPoint(50,100);
+        myMove.addPoint(150,300);
+        myMove.addPoint(300,500);
+        myMove.addPoint(500,650);
+        myMove.addPoint(700,800);
+        myMove.addPoint(900,1000);
+        myMove.addPoint(1000,1200);
+        myMove.addPoint(1200,1350);
+        myMove.addPoint(1400,1450);
+        myMove.addPoint(1500,1500);
+
+
+        OSCMessage outgoingMessage = myMove.generateMessage();
+        /*
+        OSCMessage outgoingMessage = new OSCMessage();
+        outgoingMessage.setAddress("/IZZY/CurveMove");
         outgoingMessage.addArgument(5);
-        outgoingMessage.addArgument(-200);
+        outgoingMessage.addArgument(3000);
+        outgoingMessage.addArgument(0);
         OSCMessage outgoingMessage2 = new OSCMessage();
-        outgoingMessage2.setAddress("/IZZY/Units");
-        outgoingMessage2.addArgument(16);
-        outgoingMessage2.addArgument("rotations");
+        outgoingMessage2.setAddress("/IZZY/Turn");
+        outgoingMessage2.addArgument(0);
+        outgoingMessage2.addArgument(90);
+        outgoingMessage2.addArgument(10);
+        */
         OSCPortOut sender = new OSCPortOut(outgoingAddress, outgoingPort);
-        //sender.send(outgoingMessage2);
         sender.send(outgoingMessage);
-        sender.close();*/
+        sender.close();
     }
 
     public void setCenterPosition(int x, int y, int z) {

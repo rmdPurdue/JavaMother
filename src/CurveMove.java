@@ -16,6 +16,7 @@ Known Errors:
 
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CurveMove {
@@ -27,6 +28,7 @@ public class CurveMove {
     CurveMove(){
         this.size = 0;
         this.totalDistance = 0;
+        this.points = new ArrayList<>();
     }
     private class CurvePoint {
         private double x;
@@ -44,15 +46,16 @@ public class CurveMove {
 
         void calcMove() {
             CurvePoint nextPoint = points.get(points.indexOf(this) + 1);
-            double diffX = this.x - nextPoint.x;
-            double diffY = this.y - nextPoint.y;
+            double diffX = -(this.x - nextPoint.x);
+            double diffY = -(this.y - nextPoint.y);
 
             this.distance = (int) Math.sqrt(diffX * diffX + diffY * diffY);
             if (diffY == 0) {
                 this.angle = 90;
             } else {
-                this.angle = (int) Math.tan(diffX / diffY);
+                this.angle = (int) Math.toDegrees(Math.atan(diffX / diffY));
             }
+            System.out.print("calc on point, diffx: " + diffX + " diffy: " + diffY + " angle: " + this.angle);
 
             if (diffY < 0 && diffX < 0) {
                 this.angle = 180 + this.angle;
@@ -61,7 +64,7 @@ public class CurveMove {
             } else if (diffX < 0) {
                 this.angle = 360 - this.angle;
             }
-
+            System.out.println(" corrected absolute angle: " + this.angle);
 
             CurveMove.this.updateDistance(this.distance);
         }
@@ -74,7 +77,8 @@ public class CurveMove {
 
     public void addPoint(double x, double y) {
 
-        points.add(new CurvePoint(x, y));
+        CurvePoint myPoint = new CurvePoint(x,y);
+        points.add(myPoint);
         if (this.size != 0) {
             points.get(this.size - 1).calcMove();
         }
