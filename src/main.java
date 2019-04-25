@@ -3,9 +3,13 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
+import javax.script.*;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class main extends Application {
     private int INCHES_TO_MICRONS = 25400;
@@ -14,8 +18,21 @@ public class main extends Application {
     private View view;
     private Model model;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ScriptException, IOException, NoSuchMethodException {
         System.out.println("Hello from mother!");
+
+        //an attempt to run the javascript library in java, ran into certain undefined problems
+        /*ScriptEngineManager manager = new ScriptEngineManager();
+        ScriptEngine engine = manager.getEngineByName("JavaScript");
+// read script file
+        engine.eval(Files.newBufferedReader(Paths.get("C:\\Users\\dandree\\IdeaProjects\\JavaMother\\src\\bezierjs-gh-pages\\lib\\bezier.js"), StandardCharsets.UTF_8));
+
+
+        Invocable inv = (Invocable) engine;
+// call function from script file
+        inv.invokeFunction("runBez");
+        */
+
         Application.launch(args);
     }
 
