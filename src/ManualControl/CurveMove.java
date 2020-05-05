@@ -1,3 +1,5 @@
+package ManualControl;
+
 import com.illposed.osc.OSCMessage;
 
 /*
@@ -92,12 +94,12 @@ public class CurveMove {
         int tempAngle = this.points.get(0).angle;
         int runningDistance;
         if (this.size < 2) {
-            System.out.println("ERROR, CurveMove needs at least 2 points to generate message");
+            System.out.println("ERROR, ManualControl.CurveMove needs at least 2 points to generate message");
             return outgoingMessage;
         }
 
         runningDistance = 0;
-        outgoingMessage.setAddress("/IZZY/CurveMove");
+        outgoingMessage.setAddress("/IZZY/ManualControl.CurveMove");
         outgoingMessage.addArgument(this.totalDistance);
         outgoingMessage.addArgument(this.size);
         //start adding points

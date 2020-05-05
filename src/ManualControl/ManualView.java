@@ -1,3 +1,5 @@
+package ManualControl;
+
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,7 +17,10 @@ import javafx.scene.text.Font;
 
 import java.awt.*;
 
-public class View {
+/*
+REPLACED BY .FXML FILE "MotherInterface.fxml"
+ */
+public class ManualView {
     public Scene scene;
     public Text xPositionDisplay = new Text();
     public Text yPositionDisplay = new Text();
@@ -64,7 +69,7 @@ public class View {
 
     Pane pane = new Pane();
 
-    public View() {
+    public ManualView() {
 
         VBox header = makeHeader();
         VBox statusFields = makeStatusFields();
@@ -190,9 +195,9 @@ public class View {
         positionStatusGrid.getColumnConstraints().addAll(columnConstraints, columnConstraints);
 
         positionStatusGrid.add(linearPositionAreaLabel,0,0,2,1);
-        positionStatusGrid.add(xPositionLabel,0,1);
-        positionStatusGrid.add(xPositionDisplay,1,1);
-        positionStatusGrid.add(yPositionLabel,0,2);
+        positionStatusGrid.add(xPositionLabel,0,1);//
+        positionStatusGrid.add(xPositionDisplay,1,1);//
+        positionStatusGrid.add(yPositionLabel,0,2);//
         positionStatusGrid.add(yPositionDisplay,1,2);
         positionStatusGrid.add(zPositionLabel,0,3);
         positionStatusGrid.add(zPositionDisplay,1,3);
