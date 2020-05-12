@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ManualControl.MotherManualController">
+<top>
+    <VBox spacing="10.0" BorderPane.alignment="CENTER">
+        <children>
+            <Label text="IZZY Project Mother Interface Manual">
+                <font>
+                    <Font name="Arial" size="24.0" />
+                </font>
+                <padding>
+                    <Insets bottom="5.0" left="20.0" right="10.0" top="5.0" />
+                </padding>
+            </Label>
+        </children>
+         <padding>
+            <Insets bottom="20.0" top="5.0" />
+         </padding>
+    </VBox>
+</top>
+<left>
+    <VBox spacing="10.0" BorderPane.alignment="CENTER">
+        <children>
+            <Label fx:id="statusAreaLabel" text="IZZY Status">
+                <font>
+                    <Font name="Arial Bold" size="16.0" />
+                </font>
+            </Label>
+            <GridPane alignment="CENTER_RIGHT" hgap="10.0" vgap="5.0">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="156.5" minWidth="144.5" prefWidth="156.5" />
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label fx:id="linearPositionAreaLabel" text="Linear Position" GridPane.columnSpan="2">
+                        <font>
+                            <Font name="Arial Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="X Position" GridPane.rowIndex="1" fx:id="xPositionLabel">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="yPositionLabel" text="Y Position" GridPane.rowIndex="2">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="zPositionLabel" text="Z Position" GridPane.rowIndex="3">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label text="Velocity in X" GridPane.rowIndex="4" fx:id="xVelocityLabel">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="yVelocityLabel" text="Velocity in Y" GridPane.rowIndex="5">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="zVelocityLabel" text="Velocity in Z" GridPane.rowIndex="6">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label text="Acceleration in X" GridPane.rowIndex="7" fx:id="xAccelerationLabel">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="yAccelerationLabel" text="Acceleration in Y" GridPane.rowIndex="8">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="zAccelerationLabel" text="Acceleration in Z" GridPane.rowIndex="9">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Text GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xPositionDisplay">
+                       <font>
+                            <Font name="Arial" size="12.0" />
+                       </font>
+                    </Text>
+                    <Text fx:id="yPositionDisplay" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="zPositionDisplay" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="xVelocityDisplay">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="yVelocityDisplay" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="zVelocityDisplay" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text GridPane.columnIndex="1" GridPane.rowIndex="7" fx:id="xAccelerationDisplay">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="yAccelerationDisplay" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="zAccelerationDisplay" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                </children>
+                <VBox.margin>
+                    <Insets />
+                </VBox.margin>
+            </GridPane>
+            <Separator fx:id="horizontalSeparator" prefWidth="200.0" />
+            <GridPane fx:id="angularPositionStatusGrid" alignment="CENTER_RIGHT" hgap="10.0" vgap="5.0">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                    <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                    <RowConstraints vgrow="SOMETIMES" />
+                </rowConstraints>
+                <children>
+                    <Label fx:id="angularPositionAreaLabel" text="Angular Position" GridPane.columnSpan="2">
+                        <font>
+                            <Font name="Arial Bold" size="14.0" />
+                        </font>
+                    </Label>
+                    <Label text="Angular Position in X" GridPane.rowIndex="1" fx:id="xAnglePositionLabel">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="yAnglePositionLabel" text="Angular Position in Y" GridPane.rowIndex="2">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="zAnglePositionLabel" text="Angular Position in Z" GridPane.rowIndex="3">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label text="Angular Velocity in X" GridPane.rowIndex="4" fx:id="xAngleVelocityLabel">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="yAngleVelocityLabel" text="Angular Velocity in Y" GridPane.rowIndex="5">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="zAngleVelocityLabel" text="Angular Velocity in Z" GridPane.rowIndex="6">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label text="Angular Acceleration in X" GridPane.rowIndex="7" fx:id="xAngleAccelerationLabel">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="yAngleAccelerationLabel" text="Angular Acceleration in Y" GridPane.rowIndex="8">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Label fx:id="zAngleAccelerationLabel" text="Angular Acceleration in Z" GridPane.rowIndex="9">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Label>
+                    <Text GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xAngularPositionDisplay">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="yAngularPositionDisplay" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="zAngularPositionDisplay" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="xAngularVelocityDisplay">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="yAngularVelocityDisplay" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="zAngularVelocityDisplay" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text GridPane.columnIndex="1" GridPane.rowIndex="7" fx:id="xAngularAccelerationDisplay">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="yAngularAccelerationDisplay" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                    <Text fx:id="zAngularAccelerationDisplay" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                        <font>
+                            <Font name="Arial" size="12.0" />
+                        </font>
+                    </Text>
+                </children>
+            </GridPane>
+        </children>
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="10.0" top="5.0" />
+        </padding>
+    </VBox>
+</left>
+   <center>
+      <VBox spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane fx:id="pane">
+               <children>
+                  <Canvas fx:id="backgroundCanvas" height="400.0" width="600.0" />
+               </children>
+            </Pane>
+            <HBox spacing="20.0">
+               <children>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints />
+                      <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints />
+                        <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                         <Label text="New Move" GridPane.columnSpan="2" />
+                         <Label fx:id="newXPositionLabel" text="X Position:" GridPane.rowIndex="1" />
+                         <Label fx:id="newYPositionLabel" text="Y Position:" GridPane.rowIndex="2" />
+                         <Label fx:id="newHeadingLabel" text="Heading:" GridPane.rowIndex="3" />
+                        <Button fx:id="addTargetBtn" mnemonicParsing="false" onAction="#addTargetBtnAction" text="Add Target" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField fx:id="headingEntry" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="xPositionEntry" />
+                        <TextField fx:id="yPositionEntry" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints />
+                      <ColumnConstraints />
+                      <ColumnConstraints />
+                      <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                      <RowConstraints />
+                    </rowConstraints>
+                     <children>
+                        <TextField fx:id="controlX1Entry" />
+                        <TextField fx:id="controlY1Entry" GridPane.columnIndex="1" />
+                        <TextField fx:id="controlX2Entry" GridPane.rowIndex="1" />
+                        <TextField fx:id="controlY2Entry" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Button fx:id="chooseControl1Point" mnemonicParsing="false" onAction="#chooseControl1PointAction" text="Choose Point" GridPane.columnIndex="2" />
+                        <Button fx:id="chooseControl2Point" mnemonicParsing="false" text="Choose Point" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints />
+                      <ColumnConstraints />
+                      <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints />
+                      <RowConstraints />
+                    </rowConstraints>
+                     <children>
+                        <Label text="Total Move Time:" GridPane.columnSpan="2" />
+                        <Label fx:id="newAccelerationTime" text="Total Acceleration Time: " GridPane.rowIndex="1" />
+                        <Label fx:id="newDecelerationTime" text="Total Deceleration Time: " GridPane.rowIndex="2" />
+                        <Button fx:id="goToTargetBtn" mnemonicParsing="false" onAction="#goToTargetBtnAction" text="Go to Target" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField fx:id="totalTimeEntry" GridPane.columnIndex="1" />
+                        <TextField fx:id="accelerationTimeEntry" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField fx:id="decelerationTimeEntry" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                     </children>
+                  </GridPane>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </VBox>
+   </center>
+</BorderPane>

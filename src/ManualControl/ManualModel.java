@@ -1,3 +1,5 @@
+package ManualControl;
+
 import Location.Position;
 import Location.StageArea;
 import Location.Trajectory;
@@ -15,22 +17,25 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 
-public class Model {
+public class ManualModel {
     public OSCPortIn receiver = null;
     public OSCListener listener = null;
     public Position currentPosition = new Position(Color.RED);
     public Position centerPosition = new Position(Color.BLUE);
     public Position targetPosition = new Position(Color.GREEN);
     public StageArea stageArea = new StageArea();
-    Trajectory targetTrajectory = new Trajectory(currentPosition, targetPosition, stageArea.getPixelRatio());
+    public Trajectory targetTrajectory = new Trajectory(currentPosition, targetPosition, stageArea.getPixelRatio());
+    private static ManualModel currentInstance;
 
     InetAddress outgoingAddress = InetAddress.getByName("192.168.2.4");
     int outgoingPort = 8000;
 
-    public Model() throws UnknownHostException {
+    public ManualModel() throws UnknownHostException {
+        currentInstance = this;
     }
 
-    public void Model() {
+    public static ManualModel getCurrentInstance() {
+        return currentInstance;
     }
 
     public void startListening() throws SocketException, IOException {
@@ -67,7 +72,7 @@ public class Model {
         OSCMessage outgoingMessage = myMove.generateMessage();
         /*
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/CurveMove");
+        outgoingMessage.setAddress("/IZZY/ManualControl.CurveMove");
         outgoingMessage.addArgument(5);
         outgoingMessage.addArgument(3000);
         outgoingMessage.addArgument(0);
