@@ -1,14 +1,236 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="LineFollowMother.MotherLineFollowController"
-            prefHeight="400.0" prefWidth="600.0">
-
-</AnchorPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LineFollowMother.MotherLineFollowController">
+    <top>
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="IZZY Project Mother Interface Line-Following">
+                    <font>
+                        <Font name="Arial" size="24.0" />
+                    </font>
+                    <padding>
+                        <Insets bottom="5.0" left="20.0" right="10.0" top="5.0" />
+                    </padding>
+                </Label>
+            </children>
+            <padding>
+                <Insets bottom="20.0" top="5.0" />
+            </padding>
+        </VBox>
+    </top>
+    <left>
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="IZZY Status">
+                    <font>
+                        <Font name="Arial Bold" size="16.0" />
+                    </font>
+                </Label>
+                <GridPane alignment="CENTER_RIGHT" hgap="10.0" vgap="5.0">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="156.5" minWidth="144.5" prefWidth="156.5" />
+                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                  <RowConstraints />
+                    </rowConstraints>
+                    <children>
+                        <Label text="Speed Setpoint" GridPane.rowIndex="1">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Drive Speed" GridPane.rowIndex="2">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Error Correction Setpoint" GridPane.rowIndex="3">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Error Angle" GridPane.rowIndex="4">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Kp" GridPane.rowIndex="5">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Ki" GridPane.rowIndex="6">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Kd" GridPane.rowIndex="7">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Current State" GridPane.rowIndex="8">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Label text="Exceptions" GridPane.rowIndex="9">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Label>
+                        <Text fx:id="speedSetPointValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="driveSpeedValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="errorCorrectionSetPointValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="errorAngleValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="kpValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="kiValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="6">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="kdValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="7">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="currentStateValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="8">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                        <Text fx:id="exceptionsValue" text="----" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="9">
+                            <font>
+                                <Font name="Arial" size="12.0" />
+                            </font>
+                        </Text>
+                  <Label fx:id="linearPositionAreaLabel1" text="Variables">
+                     <font>
+                        <Font name="Arial Bold" size="14.0" />
+                     </font>
+                  </Label>
+                        <Label fx:id="linearPositionAreaLabel" text="Values" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                            <font>
+                                <Font name="Arial Bold" size="14.0" />
+                            </font>
+                        </Label>
+                    </children>
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </GridPane>
+                <Separator prefWidth="200.0" />
+            <GridPane>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Circle fx:id="sensorState0" fill="DODGERBLUE" radius="8.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" />
+                  <Circle fx:id="sensorState1" fill="DODGERBLUE" layoutX="60.0" layoutY="25.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+                  <Circle fx:id="sensorState2" fill="DODGERBLUE" layoutX="60.0" layoutY="25.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+               </children>
+            </GridPane>
+            <Slider fx:id="wirePositionSlider" disable="true" />
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="10.0" top="5.0" />
+            </padding>
+        </VBox>
+    </left>
+    <center>
+        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+            <children>
+                <Pane>
+               <children>
+                  <Button fx:id="motionStopButton" layoutY="180.0" mnemonicParsing="false" onAction="#motionStopButtonClicked" prefHeight="50.0" prefWidth="150.0" text="Motion Stop" />
+                  <Button fx:id="startButton" layoutY="75.0" mnemonicParsing="false" onAction="#startButtonClick" prefHeight="100.0" prefWidth="150.0" text="Start" />
+                  <Button fx:id="eStopButton" mnemonicParsing="false" onAction="#eStopButtonClicked" prefHeight="40.0" prefWidth="150.0" text="E-Stop" />
+                  <Slider fx:id="speedControlSlider" blockIncrement="5.0" layoutX="150.0" layoutY="50.0" onDragDone="#speedControlSliderDragged" orientation="VERTICAL" prefHeight="175.0" prefWidth="100.0" showTickMarks="true" value="50.0" />
+                  <Label alignment="CENTER" layoutX="150.0" layoutY="12.0" prefWidth="100.0" text="Speed Control" textAlignment="CENTER" />
+               </children>
+                </Pane>
+            </children>
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+        </VBox>
+    </center>
+   <right>
+      <VBox alignment="TOP_CENTER" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox>
+               <children>
+                  <Label minWidth="20.0" text="Kp" />
+                  <TextField fx:id="kpTextField" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label minWidth="20.0" text="Ki" />
+                  <TextField fx:id="kiTextField" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox>
+               <children>
+                  <Label minWidth="20.0" text="Kd" />
+                  <TextField fx:id="kdTextField" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
+            </HBox>
+            <Button fx:id="setTuningButton" mnemonicParsing="false" onAction="#setTuningButtonClicked" text="Set" />
+         </children>
+      </VBox>
+   </right>
+   <padding>
+      <Insets right="20.0" />
+   </padding>
+</BorderPane>

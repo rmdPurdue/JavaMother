@@ -1,3 +1,4 @@
+import LineFollowMother.LineFollowModel;
 import ManualControl.ManualModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -13,6 +14,7 @@ import java.net.UnknownHostException;
 public class Main extends Application {
     private Stage stage;
     public static ManualModel manualModel;
+    public static LineFollowModel lineFollowModel;
     public static Main main;
 
     public static void main(String[] args) throws ScriptException, IOException, NoSuchMethodException {
@@ -34,11 +36,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws SocketException, UnknownHostException, IOException {
-        manualModel = new ManualModel();
         main = this;
         this.stage = stage;
-
-        manualModel.setStageArea();
 
         Parent launchMenuView = FXMLLoader.load(getClass().getResource("LaunchMenuView.fxml"));
         Scene launchScene = new Scene(launchMenuView);
@@ -46,13 +45,19 @@ public class Main extends Application {
         this.stage.setTitle("IZZY");
         this.stage.sizeToScene();
         this.stage.setScene(launchScene);
-        this.stage.setResizable(false);
+        this.stage.setResizable(true);
         this.stage.show();
-        manualModel.startListening();
     }
 
-    public void switchScenes(Scene scene) {
+    public void switchScenes(Scene scene, Object model) {
         this.stage.setScene(scene);
+        if (model instanceof ManualModel) {
+            manualModel = (ManualModel) model;
+        } else if (model instanceof LineFollowModel) {
+            lineFollowModel = (LineFollowModel) model;
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     public static Main getInstance() {

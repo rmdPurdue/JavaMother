@@ -1,3 +1,5 @@
+import LineFollowMother.LineFollowModel;
+import ManualControl.ManualModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +17,7 @@ public class LaunchMenuController {
     ChoiceBox<String> interfaceSelection;
 
     @FXML
-    Label noneChosen;
+    Label noneChosenErrorLabel;
 
     @FXML
     public void initialize() {
@@ -24,16 +26,18 @@ public class LaunchMenuController {
 
     public void chooseAction(ActionEvent e) {
         try {
-            if (interfaceSelection.getValue() == null) {
-                noneChosen.setVisible(true);
-            } else if (interfaceSelection.getValue().equals("Line Following")) {
+            if (interfaceSelection.getValue().equals("Line Following")) {
                 Parent lineFollowView = FXMLLoader.load(getClass().getResource("LineFollowMother/MotherLineFollowView.fxml"));
-                Main.getInstance().switchScenes(new Scene(lineFollowView));
+                LineFollowModel model = new LineFollowModel();
+                model.startListening();
+                Main.getInstance().switchScenes(new Scene(lineFollowView), model);
             } else if (interfaceSelection.getValue().equals("Manual Control")){
                 Parent manualView = FXMLLoader.load(getClass().getResource("ManualControl/MotherManualView.fxml"));
-                Main.getInstance().switchScenes(new Scene(manualView));
+                ManualModel model = new ManualModel();
+                model.startListening();
+                Main.getInstance().switchScenes(new Scene(manualView), model);
             } else {
-                noneChosen.setVisible(true);
+                noneChosenErrorLabel.setVisible(true);
             }
         } catch (IOException exception) {
             exception.printStackTrace();

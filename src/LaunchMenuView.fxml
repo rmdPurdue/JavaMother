@@ -3,11 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LaunchMenuController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LaunchMenuController">
    <children>
       <ChoiceBox fx:id="interfaceSelection" layoutX="292.0" layoutY="189.0" prefWidth="150.0" />
-      <Label layoutX="132.0" layoutY="193.0" text="Choose Control Interface" />
+      <Label layoutX="132.0" layoutY="193.0" text="Choose Control Interface" AnchorPane.bottomAnchor="190.0" AnchorPane.leftAnchor="132.0" AnchorPane.rightAnchor="336.0" AnchorPane.topAnchor="193.0" />
       <Button fx:id="continueBtn" layoutX="266.0" layoutY="266.0" mnemonicParsing="false" onAction="#chooseAction" text="Continue" />
-      <Label fx:id="noneChosen" layoutX="301.0" layoutY="165.0" text="Please select an interface" textFill="RED" visible="false" />
+      <Label fx:id="noneChosenErrorLabel" layoutX="301.0" layoutY="165.0" text="Please select an interface" textFill="RED" visible="false" />
    </children>
 </AnchorPane>
