@@ -17,7 +17,7 @@ public class Main extends Application {
     public static LineFollowModel lineFollowModel;
     public static Main main;
 
-    public static void main(String[] args) throws ScriptException, IOException, NoSuchMethodException {
+    public static void main(String[] args) {
         System.out.println("Hello from mother!");
         //an attempt to run the javascript library in java, ran into certain undefined problems
         /*ScriptEngineManager manager = new ScriptEngineManager();
@@ -35,7 +35,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws SocketException, UnknownHostException, IOException {
+    public void start(Stage stage) throws IOException {
         main = this;
         this.stage = stage;
 
@@ -47,6 +47,12 @@ public class Main extends Application {
         this.stage.setScene(launchScene);
         this.stage.setResizable(true);
         this.stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        LineFollowModel.getCurrentInstance().stopListening();
     }
 
     public void switchScenes(Scene scene, Object model) {

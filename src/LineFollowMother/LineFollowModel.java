@@ -28,14 +28,19 @@ public class LineFollowModel {
     }
 
     public void startListening() throws IOException {
-        receiver = new OSCPortIn(8001);
+        receiver = new OSCPortIn(8000);
         listener = (time, message) -> {
             System.out.println("Message Received from IZZY");
             OSCParser(message);
         };
         receiver.startListening();
-        receiver.addListener("/helloWorld", listener);
+        receiver.addListener("/IZZYMother/Status", listener);
         System.out.println("Mother is now listening for IZZY via OSC\n");
+    }
+
+    public void stopListening() {
+        receiver.stopListening();
+        receiver.close();
     }
 
     public void sendMessage(OSCMessage message) throws IOException {
@@ -45,15 +50,19 @@ public class LineFollowModel {
     }
 
     private void OSCParser(OSCMessage message){
-        String address = message.getAddress();
+        MotherLineFollowController controller = MotherLineFollowController.getCurrentInstance();
+        controller.setDriveSpeed((int) message.getArguments().get(0));
+        controller.setErrorCorrectionSetPoint((int) message.getArguments().get(1));
+        controller.setErrorAngle((int) message.getArguments().get(2));
+        controller.setKP((int) message.getArguments().get(3));
+        controller.setKI((int) message.getArguments().get(4));
+        controller.setKD((int) message.getArguments().get(5));
+        controller.setCurrentState(((boolean) message.getArguments().get(6)) ? "Moving" : "Not Moving");
+        controller.setExceptions((String) message.getArguments().get(7));
+        boolean[] sensors = (boolean[]) message.getArguments().get(8);
+        controller.toggleLeftSensor(sensors[0]);
+        controller.toggleCenterSensor(sensors[1]);
+        controller.toggleRightSensor(sensors[2]);
 
-        if(address.equals("/mother/status")) {
-            //updateCurrentPosition(message);
-        } else if(address.equals("/mother/LineFollow/Update")){
-            System.out.println("Received line follow update!");
-            System.out.println(message.getArguments().indexOf(0));
-        } else if (address.equals("/helloWorld")) {
-            System.out.println("Hello World!!");
-        }
     }
 }

@@ -27,14 +27,14 @@ public class LaunchMenuController {
     public void chooseAction(ActionEvent e) {
         try {
             if (interfaceSelection.getValue().equals("Line Following")) {
-                Parent lineFollowView = FXMLLoader.load(getClass().getResource("LineFollowMother/MotherLineFollowView.fxml"));
                 LineFollowModel model = new LineFollowModel();
                 model.startListening();
+                Parent lineFollowView = FXMLLoader.load(getClass().getResource("LineFollowMother/MotherLineFollowView.fxml"));
                 Main.getInstance().switchScenes(new Scene(lineFollowView), model);
             } else if (interfaceSelection.getValue().equals("Manual Control")){
-                Parent manualView = FXMLLoader.load(getClass().getResource("ManualControl/MotherManualView.fxml"));
                 ManualModel model = new ManualModel();
                 model.startListening();
+                Parent manualView = FXMLLoader.load(getClass().getResource("ManualControl/MotherManualView.fxml"));
                 Main.getInstance().switchScenes(new Scene(manualView), model);
             } else {
                 noneChosenErrorLabel.setVisible(true);

@@ -89,18 +89,6 @@ public class MotherLineFollowController {
     }
 
     @FXML
-    public void eStopButtonClicked(ActionEvent e) {
-        OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/eStop");
-        outgoingMessage.addArgument("eStop");
-        try {
-            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    @FXML
     public void motionStopButtonClicked(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
         outgoingMessage.setAddress("/IZZY/FollowLineState");
@@ -114,10 +102,22 @@ public class MotherLineFollowController {
     }
 
     @FXML
+    public void eStopButtonClicked(ActionEvent e) {
+        OSCMessage outgoingMessage = new OSCMessage();
+        outgoingMessage.setAddress("/IZZY/eStop");
+        outgoingMessage.addArgument("eStop");
+        try {
+            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @FXML
     public void speedControlSliderDragged(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
         outgoingMessage.setAddress("/IZZY/FollowLineSpeed");
-        outgoingMessage.addArgument(30);
+        outgoingMessage.addArgument((int) (speedControlSlider.getValue() + 0.5));
         try {
             LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
         } catch (IOException exception) {
@@ -129,9 +129,9 @@ public class MotherLineFollowController {
     public void setTuningButtonClicked(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
         outgoingMessage.setAddress("/IZZY/FollowLineTune");
-        outgoingMessage.addArgument(1.0);
-        outgoingMessage.addArgument(1.0);
-        outgoingMessage.addArgument(1.0);
+        outgoingMessage.addArgument(1.0); //kp
+        outgoingMessage.addArgument(1.0); //ki
+        outgoingMessage.addArgument(1.0); //kd
         try {
             LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
         } catch (IOException exception) {
