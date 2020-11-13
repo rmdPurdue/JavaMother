@@ -28,7 +28,6 @@ public class LaunchMenuController {
         try {
             if (interfaceSelection.getValue().equals("Line Following")) {
                 LineFollowModel model = new LineFollowModel();
-                model.startListening();
                 Parent lineFollowView = FXMLLoader.load(getClass().getResource("LineFollowMother/MotherLineFollowView.fxml"));
                 Main.getInstance().switchScenes(new Scene(lineFollowView), model);
             } else if (interfaceSelection.getValue().equals("Manual Control")){

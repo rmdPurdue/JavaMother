@@ -18,7 +18,7 @@ public class LineFollowModel {
     final int outgoingPort;
 
     public LineFollowModel() throws UnknownHostException {
-        outgoingAddress = InetAddress.getByName("192.168.2.5");
+        outgoingAddress = InetAddress.getByName("192.168.2.4");
         outgoingPort = 9000;
         currentInstance = this;
     }
@@ -33,12 +33,13 @@ public class LineFollowModel {
             System.out.println("Message Received from IZZY");
             OSCParser(message);
         };
-        receiver.startListening();
         receiver.addListener("/IZZYMother/Status", listener);
+        receiver.startListening();
         System.out.println("Mother is now listening for IZZY via OSC\n");
     }
 
     public void stopListening() {
+        System.out.println("Mother is no longer listening for IZZY");
         receiver.stopListening();
         receiver.close();
     }
@@ -59,7 +60,10 @@ public class LineFollowModel {
         controller.setKD((int) message.getArguments().get(5));
         controller.setCurrentState(((boolean) message.getArguments().get(6)) ? "Moving" : "Not Moving");
         controller.setExceptions((String) message.getArguments().get(7));
-        boolean[] sensors = (boolean[]) message.getArguments().get(8);
+        boolean[] sensors = new boolean[3];
+        sensors[0] = (boolean) message.getArguments().get(8);
+        sensors[1] = (boolean) message.getArguments().get(9);
+        sensors[2] = (boolean) message.getArguments().get(10);
         controller.toggleLeftSensor(sensors[0]);
         controller.toggleCenterSensor(sensors[1]);
         controller.toggleRightSensor(sensors[2]);
