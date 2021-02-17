@@ -10,13 +10,12 @@ import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+import java.net.InetAddress;
 
 public class MotherLineFollowController {
 
     private static MotherLineFollowController currentInstance;
 
-    @FXML
-    Text speedSetPointValue;
     @FXML
     Text driveSpeedValue;
     @FXML
@@ -57,6 +56,8 @@ public class MotherLineFollowController {
     TextField kdTextField;
     @FXML
     Button setTuningButton;
+    @FXML
+    Text kErrorMessage;
 
     public MotherLineFollowController() {
         currentInstance = this;
@@ -114,7 +115,8 @@ public class MotherLineFollowController {
     }
 
     @FXML
-    public void speedControlSliderDragged(ActionEvent e) {
+    public void speedControlSliderDragged() {
+        System.out.println("Speed: " + (int) (speedControlSlider.getValue() + 0.5));
         OSCMessage outgoingMessage = new OSCMessage();
         outgoingMessage.setAddress("/IZZY/FollowLineSpeed");
         outgoingMessage.addArgument((int) (speedControlSlider.getValue() + 0.5));
@@ -127,11 +129,25 @@ public class MotherLineFollowController {
 
     @FXML
     public void setTuningButtonClicked(ActionEvent e) {
+        kErrorMessage.setVisible(false);
         OSCMessage outgoingMessage = new OSCMessage();
         outgoingMessage.setAddress("/IZZY/FollowLineTune");
-        outgoingMessage.addArgument(1.0); //kp
-        outgoingMessage.addArgument(1.0); //ki
-        outgoingMessage.addArgument(1.0); //kd
+        try {
+            outgoingMessage.addArgument(Double.parseDouble(kpTextField.getText())); //kp
+            outgoingMessage.addArgument(Double.parseDouble(kiTextField.getText())); //ki
+            outgoingMessage.addArgument(Double.parseDouble(kdTextField.getText())); //kd
+            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+        } catch (NumberFormatException exception) {
+            kErrorMessage.setVisible(true);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void stopIzzyProcessingButtonClicked(ActionEvent e) {
+        OSCMessage outgoingMessage = new OSCMessage();
+        outgoingMessage.setAddress("/IZZY/StopProcessing");
         try {
             LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
         } catch (IOException exception) {
@@ -139,32 +155,28 @@ public class MotherLineFollowController {
         }
     }
 
-    public void setSpeedSetPoint(int speedSetPoint) {
-        speedSetPointValue.setText(Integer.toString(speedSetPoint));
-    }
-
     public void setDriveSpeed(int driveSpeed) {
         driveSpeedValue.setText(Integer.toString(driveSpeed));
     }
 
-    public void setErrorCorrectionSetPoint(int errorCorrectionSetPoint) {
-        errorCorrectionSetPointValue.setText(Integer.toString(errorCorrectionSetPoint));
+    public void setErrorCorrectionSetPoint(double errorCorrectionSetPoint) {
+        errorCorrectionSetPointValue.setText(Double.toString(errorCorrectionSetPoint));
     }
 
-    public void setErrorAngle(int errorAngle) {
-        errorAngleValue.setText(Integer.toString(errorAngle));
+    public void setErrorAngle(double errorAngle) {
+        errorAngleValue.setText(Double.toString(errorAngle));
     }
 
-    public void setKP(int kP) {
-        kpValue.setText(Integer.toString(kP));
+    public void setKP(double kP) {
+        kpValue.setText(Double.toString(kP));
     }
 
-    public void setKI(int kI) {
-        kiValue.setText(Integer.toString(kI));
+    public void setKI(double kI) {
+        kiValue.setText(Double.toString(kI));
     }
 
-    public void setKD(int kD) {
-        kdValue.setText(Integer.toString(kD));
+    public void setKD(double kD) {
+        kdValue.setText(Double.toString(kD));
     }
 
     public void setCurrentState(String currentState) {
@@ -196,6 +208,20 @@ public class MotherLineFollowController {
             sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
         } else {
             sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 144, 255));
+        }
+    }
+
+    public void setWirePosition(boolean left, boolean center, boolean right) {
+        if (left && !center && !right) {
+            wirePositionSlider.setValue(0.1);
+        } else if (left && center && !right) {
+            wirePositionSlider.setValue(0.3);
+        } else if (!left && center && !right) {
+            wirePositionSlider.setValue(0.5);
+        } else if (!left && center && right) {
+            wirePositionSlider.setValue(0.7);
+        } else if (!left && !center && right) {
+            wirePositionSlider.setValue(0.9);
         }
     }
 

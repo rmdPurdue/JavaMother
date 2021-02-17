@@ -17,8 +17,8 @@ public class LineFollowModel {
     final InetAddress outgoingAddress;
     final int outgoingPort;
 
-    public LineFollowModel() throws UnknownHostException {
-        outgoingAddress = InetAddress.getByName("192.168.2.4");
+    public LineFollowModel(String ipAddress) throws UnknownHostException {
+        outgoingAddress = InetAddress.getByName(ipAddress);
         outgoingPort = 9000;
         currentInstance = this;
     }
@@ -33,8 +33,8 @@ public class LineFollowModel {
             System.out.println("Message Received from IZZY");
             OSCParser(message);
         };
-        receiver.addListener("/IZZYMother/Status", listener);
         receiver.startListening();
+        receiver.addListener("/IZZYMother/Status", listener);
         System.out.println("Mother is now listening for IZZY via OSC\n");
     }
 
@@ -53,20 +53,18 @@ public class LineFollowModel {
     private void OSCParser(OSCMessage message){
         MotherLineFollowController controller = MotherLineFollowController.getCurrentInstance();
         controller.setDriveSpeed((int) message.getArguments().get(0));
-        controller.setErrorCorrectionSetPoint((int) message.getArguments().get(1));
-        controller.setErrorAngle((int) message.getArguments().get(2));
-        controller.setKP((int) message.getArguments().get(3));
-        controller.setKI((int) message.getArguments().get(4));
-        controller.setKD((int) message.getArguments().get(5));
+        controller.setErrorCorrectionSetPoint((double) message.getArguments().get(1));
+        controller.setErrorAngle((double) message.getArguments().get(2));
+        controller.setKP((double) message.getArguments().get(3));
+        controller.setKI((double) message.getArguments().get(4));
+        controller.setKD((double) message.getArguments().get(5));
         controller.setCurrentState(((boolean) message.getArguments().get(6)) ? "Moving" : "Not Moving");
         controller.setExceptions((String) message.getArguments().get(7));
-        boolean[] sensors = new boolean[3];
-        sensors[0] = (boolean) message.getArguments().get(8);
-        sensors[1] = (boolean) message.getArguments().get(9);
-        sensors[2] = (boolean) message.getArguments().get(10);
-        controller.toggleLeftSensor(sensors[0]);
-        controller.toggleCenterSensor(sensors[1]);
-        controller.toggleRightSensor(sensors[2]);
+        controller.toggleLeftSensor((boolean) message.getArguments().get(8));
+        controller.toggleCenterSensor((boolean) message.getArguments().get(9));
+        controller.toggleRightSensor((boolean) message.getArguments().get(10));
+        controller.setWirePosition((boolean) message.getArguments().get(8), (boolean) message.getArguments().get(9),
+                (boolean) message.getArguments().get(10));
 
     }
 }
