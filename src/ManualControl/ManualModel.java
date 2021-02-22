@@ -7,15 +7,19 @@ import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import com.illposed.osc.OSCPortOut;
+import comms.HeartBeat;
+import comms.HeartBeatResponder;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
-
+import util.IZZY;
+import util.Mother;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ManualModel {
     public OSCPortIn receiver = null;
@@ -30,8 +34,16 @@ public class ManualModel {
     InetAddress outgoingAddress = InetAddress.getByName("192.168.2.4");
     int outgoingPort = 8000;
 
-    public ManualModel() throws UnknownHostException {
+    private Mother mother = new Mother();
+    private HeartBeat heartBeat = new HeartBeat(mother);
+    private HeartBeatResponder heartBeatResponder = new HeartBeatResponder();
+    private ExecutorService executor = Executors.newFixedThreadPool(5);
+
+    public ManualModel() throws UnknownHostException, IOException {
         currentInstance = this;
+        mother.setUUID(UUID.fromString("0a1821f3-4273-4f34-8be5-c167dd7669e2"));
+
+        startHeartbeat();
     }
 
     public static ManualModel getCurrentInstance() {
@@ -194,5 +206,31 @@ public class ManualModel {
             System.out.println("Received line follow update!");
             System.out.println(message.getArguments().indexOf(0));
         }
+    }
+
+    private void startHeartbeat() throws SocketException, UnknownHostException {
+        heartBeat.setSenderID(mother.getUUID());
+
+        heartBeatResponder.setListener(izzy -> {
+            //System.out.println("Got here.");
+            Iterator itr = mother.getIzzyUnits().iterator();
+            boolean exists = false;
+            while(itr.hasNext()) {
+                IZZY itrIzzy = (IZZY)itr.next();
+                if(itrIzzy.getUUID().equals(izzy.getUUID())) {
+                    itrIzzy.setStatus(izzy.getStatus());
+                    itrIzzy.setName(izzy.getName());
+                    exists = true;
+                }
+            }
+            if(!exists) mother.getIzzyUnits().add(izzy);
+        });
+
+        executor.submit(heartBeat);
+        executor.submit(heartBeatResponder);
+    }
+
+    private void stopHeartbeat() {
+        heartBeat.stopBeating();
     }
 }
