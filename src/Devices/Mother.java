@@ -1,4 +1,4 @@
-package util;
+package Devices;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
