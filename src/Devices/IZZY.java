@@ -1,4 +1,6 @@
-package util;
+package Devices;
+
+import util.IZZYStatus;
 
 import java.net.InetAddress;
 import java.util.UUID;
@@ -12,13 +14,16 @@ import static util.IZZYStatus.*;
  * @date 12/6/2018
  */
 public class IZZY {
-    private String name = null;
-    private InetAddress ipAddress = null;
-    private int port;
-    private UUID uuid = null;
-    private IZZYStatus status = MISSING;
+    private final UUID uuid;
+    private String name;
+    private InetAddress ipAddress;
+    private IZZYStatus status;
 
-    public IZZY() {
+    public IZZY(UUID uuid) {
+        this.uuid = uuid;
+        this.name = null;
+        this.ipAddress = null;
+        this.status = MISSING;
     }
 
     public String getName() {
@@ -37,20 +42,8 @@ public class IZZY {
         this.ipAddress = ipAddress;
     }
 
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public UUID getUUID() {
         return uuid;
-    }
-
-    public void setUUID(UUID uuid) {
-        this.uuid = uuid;
     }
 
     public IZZYStatus getStatus() {

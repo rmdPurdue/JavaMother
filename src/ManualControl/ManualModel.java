@@ -1,5 +1,6 @@
 package ManualControl;
 
+import IZZYCommunication.HeartbeatResponseListener;
 import Location.Position;
 import Location.StageArea;
 import Location.Trajectory;
@@ -7,12 +8,12 @@ import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import com.illposed.osc.OSCPortOut;
-import comms.HeartBeat;
-import comms.HeartBeatResponder;
+import IZZYCommunication.HeartbeatSender;
+import IZZYCommunication.HeartbeatReceiver;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
-import util.IZZY;
-import util.Mother;
+import Devices.IZZY;
+import Devices.Mother;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -20,6 +21,7 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ManualModel {
     public OSCPortIn receiver = null;
@@ -35,8 +37,8 @@ public class ManualModel {
     int outgoingPort = 8000;
 
     private Mother mother = new Mother();
-    private HeartBeat heartBeat = new HeartBeat(mother);
-    private HeartBeatResponder heartBeatResponder = new HeartBeatResponder();
+    private HeartbeatSender heartbeatSender = new HeartbeatSender(mother);
+    private HeartbeatReceiver heartbeatReceiver = new HeartbeatReceiver();
     private ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public ManualModel() throws UnknownHostException, IOException {
@@ -209,28 +211,37 @@ public class ManualModel {
     }
 
     private void startHeartbeat() throws SocketException, UnknownHostException {
-        heartBeat.setSenderID(mother.getUUID());
+        heartbeatReceiver.setListener(
+                new HeartbeatResponseListener() {
+                    @Override
+                    public void onRemoteDeviceResponseReceived(IZZY izzy) {
+                        //System.out.println("Got here.");
+                        Iterator itr = mother.getIzzyUnits().iterator();
+                        boolean exists = false;
+                        while(itr.hasNext()) {
+                            IZZY itrIzzy = (IZZY)itr.next();
+                            if(itrIzzy.getUUID().equals(izzy.getUUID())) {
+                                itrIzzy.setStatus(izzy.getStatus());
+                                itrIzzy.setName(izzy.getName());
+                                exists = true;
+                            }
+                        }
+                        if(!exists) mother.getIzzyUnits().add(izzy);
+                    }
 
-        heartBeatResponder.setListener(izzy -> {
-            //System.out.println("Got here.");
-            Iterator itr = mother.getIzzyUnits().iterator();
-            boolean exists = false;
-            while(itr.hasNext()) {
-                IZZY itrIzzy = (IZZY)itr.next();
-                if(itrIzzy.getUUID().equals(izzy.getUUID())) {
-                    itrIzzy.setStatus(izzy.getStatus());
-                    itrIzzy.setName(izzy.getName());
-                    exists = true;
+                    @Override
+                    public void onRemoteDeviceTimeout() {
+                        //TODO: Implement some timeout features if no devices have connected
+                        return;
+                    }
                 }
-            }
-            if(!exists) mother.getIzzyUnits().add(izzy);
-        });
+        );
 
-        executor.submit(heartBeat);
-        executor.submit(heartBeatResponder);
+        executor.submit(heartbeatSender);
+        executor.submit(heartbeatReceiver);
     }
 
     private void stopHeartbeat() {
-        heartBeat.stopBeating();
+        heartbeatSender.stopBeating();
     }
 }

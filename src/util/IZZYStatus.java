@@ -9,5 +9,6 @@ package util;
 public enum IZZYStatus {
     MISSING,
     AVAILABLE,
-    MOVING;
+    MOVING,
+    BROKEN;
 }

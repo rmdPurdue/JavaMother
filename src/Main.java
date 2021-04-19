@@ -19,24 +19,12 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         System.out.println("Hello from mother!");
-        //an attempt to run the javascript library in java, ran into certain undefined problems
-        /*ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("JavaScript");
-// read script file
-        engine.eval(Files.newBufferedReader(Paths.get("C:\\Users\\dandree\\IdeaProjects\\JavaMother\\src\\bezierjs-gh-pages\\lib\\bezier.js"), StandardCharsets.UTF_8));
-
-
-        Invocable inv = (Invocable) engine;
-// call function from script file
-        inv.invokeFunction("runBez");
-        */
-
         Application.launch(args);
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        main = this;
+        this.main = this;
         this.stage = stage;
 
         Parent launchMenuView = FXMLLoader.load(getClass().getResource("LaunchMenuView.fxml"));
@@ -51,11 +39,11 @@ public class Main extends Application {
 
     @Override
     public void stop() throws Exception {
+        LineFollowModel.getCurrentInstance().closeApplication();
         super.stop();
-        LineFollowModel.getCurrentInstance().stopListening();
     }
 
-    public void switchScenes(Scene scene, Object model) {
+    public void switchScenes(final Scene scene, final Object model) {
         this.stage.setScene(scene);
         if (model instanceof ManualModel) {
             manualModel = (ManualModel) model;
