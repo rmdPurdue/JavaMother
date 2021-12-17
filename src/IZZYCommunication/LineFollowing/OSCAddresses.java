@@ -1,4 +1,4 @@
-package util;
+package IZZYCommunication.LineFollowing;
 
 /**
  * @author Rich Dionne
@@ -7,11 +7,11 @@ package util;
  * @date 12/4/2018
  */
 public enum OSCAddresses {
-    SIMPLE_MOVE("/IZZY/SimpleMove"),
-    FOLLOW_LINE("/IZZY/LineFollow/*"),
-    FOLLOW_LINE_FORWARD("/IZZY/LineFollow/Forward"),
-    FOLLOW_LINE_BACKWARD("/IZZY/LineFollow/Backward"),
-    FOLLOW_LINE_STOP("/IZZY/LineFollow/Stop");
+    FOLLOW_LINE_STATE("/IZZY/FollowLineState"),
+    FOLLOW_LINE_SPEED("/IZZY/FollowLineSpeed"),
+    FOLLOW_LINE_TUNE("/IZZY/FollowLineTune"),
+    STOP_PROCESSING("/IZZY/StopProcessing"),
+    FOLLOW_LINE_STOP("/IZZY/eStop");
 
     private String address;
 

@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LineFollowMother.MotherLineFollowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LineFollow.LineFollowController">
     <top>
         <VBox spacing="10.0" BorderPane.alignment="CENTER">
             <children>
@@ -34,16 +34,16 @@
                 </Label>
             <HBox>
                <children>
-                  <Circle fx:id="sensorState01" fill="RED" radius="8.0" stroke="BLACK" strokeType="INSIDE">
+                  <Circle fx:id="connectionStatus" fill="RED" radius="8.0" stroke="BLACK" strokeType="INSIDE">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                   </Circle>
-                  <Label text="(Not Connected)">
+                  <Text fx:id="connectionStatusText" text="(Not Connected)">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
-                  </Label>
+                  </Text>
                </children>
             </HBox>
                 <GridPane alignment="CENTER_RIGHT" hgap="10.0" vgap="5.0">
@@ -150,7 +150,7 @@
                         <Font name="Arial Bold" size="14.0" />
                      </font>
                   </Label>
-                        <Label fx:id="linearPositionAreaLabel" text="Values" GridPane.columnIndex="1" GridPane.halignment="CENTER">
+                        <Label fx:id="linearPositionAreaLabel" text="Values" GridPane.columnIndex="1" GridPane.halignment="LEFT">
                             <font>
                                 <Font name="Arial Bold" size="14.0" />
                             </font>

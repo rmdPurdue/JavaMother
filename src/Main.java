@@ -1,61 +1,63 @@
-import LineFollowMother.LineFollowModel;
-import ManualControl.ManualModel;
+import IZZYCommunication.Heartbeat.HeartbeatReceiver;
+import IZZYCommunication.Heartbeat.HeartbeatSender;
+import LineFollow.LineFollowModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javax.script.*;
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main extends Application {
-    private Stage stage;
-    public static ManualModel manualModel;
-    public static LineFollowModel lineFollowModel;
-    public static Main main;
 
+    public static HeartbeatSender heartbeatSender;
+    public static HeartbeatReceiver heartbeatReceiver;
+    public static ExecutorService executor;
+
+    /* This function will NOT be hit when the app is packaged, we will start in init or start */
     public static void main(String[] args) {
         System.out.println("Hello from mother!");
+
+        // Launch preloader ??
+
         Application.launch(args);
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        this.main = this;
-        this.stage = stage;
+        UUID motherUUID = UUID.fromString("0a1821f3-4273-4f34-8be5-c167dd7669e2");
+        heartbeatSender = new HeartbeatSender(motherUUID);
+        heartbeatReceiver = new HeartbeatReceiver(motherUUID);
+        executor = Executors.newFixedThreadPool(2);
 
-        Parent launchMenuView = FXMLLoader.load(getClass().getResource("LaunchMenuView.fxml"));
-        Scene launchScene = new Scene(launchMenuView);
+        final Parent launchMenuView = FXMLLoader.load(Objects.requireNonNull(
+                getClass().getResource("LaunchMenu/LaunchMenuView.fxml")));
+        final Scene launchScene = new Scene(launchMenuView);
 
-        this.stage.setTitle("IZZY");
-        this.stage.sizeToScene();
-        this.stage.setScene(launchScene);
-        this.stage.setResizable(true);
-        this.stage.show();
+        stage.setTitle("IZZY");
+        stage.setScene(launchScene);
+        stage.sizeToScene();
+        stage.setResizable(true);
+        stage.show();
+
+        executor.submit(heartbeatSender);
+        executor.submit(heartbeatReceiver);
     }
 
     @Override
     public void stop() throws Exception {
-        LineFollowModel.getCurrentInstance().closeApplication();
-        super.stop();
-    }
-
-    public void switchScenes(final Scene scene, final Object model) {
-        this.stage.setScene(scene);
-        if (model instanceof ManualModel) {
-            manualModel = (ManualModel) model;
-        } else if (model instanceof LineFollowModel) {
-            lineFollowModel = (LineFollowModel) model;
-        } else {
-            throw new RuntimeException();
+        final LineFollowModel lineFollowModel = LineFollowModel.getCurrentInstance();
+        if (lineFollowModel != null) {
+            lineFollowModel.closeApplication();
         }
-    }
-
-    public static Main getInstance() {
-        return main;
+        heartbeatSender.stopBeating();
+        heartbeatReceiver.stopBeating();
+        super.stop();
     }
 
 }

@@ -1,4 +1,4 @@
-package Location;
+package ManualControl.Location;
 
 import javafx.beans.property.SimpleIntegerProperty;
 

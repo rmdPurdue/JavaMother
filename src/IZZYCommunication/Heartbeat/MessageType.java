@@ -1,4 +1,4 @@
-package IZZYCommunication;
+package IZZYCommunication.Heartbeat;
 
 /**
  * @author Rich Dionne
@@ -11,9 +11,10 @@ public enum MessageType {
     HERE ((byte)0x02),
     SETUP_ERROR((byte)0x03),
     MOVING ((byte)0x04),
+    BROKEN ((byte)0x05),
     NOT_VALID((byte)0x00);
 
-    private byte value;
+    private final byte value;
 
     MessageType(byte value) {
         this.value = value;
@@ -23,7 +24,7 @@ public enum MessageType {
         return value;
     }
 
-    public static final MessageType getMessageType(byte value) {
+    public static MessageType getMessageType(byte value) {
         for(MessageType type : MessageType.values()) {
             if(type.getValue() == value) return type;
         }

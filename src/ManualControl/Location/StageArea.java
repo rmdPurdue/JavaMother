@@ -1,4 +1,4 @@
-package Location;
+package ManualControl.Location;
 
 public class StageArea {
     final double INCHES_TO_MICRONS = 25400;

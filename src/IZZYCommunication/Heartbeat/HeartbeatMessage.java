@@ -1,4 +1,4 @@
-package IZZYCommunication;
+package IZZYCommunication.Heartbeat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,20 +14,26 @@ import java.util.UUID;
 public class HeartbeatMessage {
     private final byte preamble;
     private final byte[] identifier;
-    private byte[] length;
+    private byte[] length; // keep this under 256 bytes (Can probably bump to 512 bytes safely)
     private UUID senderUUID;
-    private byte[] uuidHigh;
-    private byte[] uuidLow;
+    private byte[] senderUUIDHigh;
+    private byte[] senderUUIDLow;
+    private UUID receiverUUID;
+    private byte[] receiverUUIDHigh;
+    private byte[] receiverUUIDLow;
     private byte messageType;
     private byte[] data;
 
     public HeartbeatMessage(byte messageType) {
         this.preamble = 0x10;
         this.identifier = new byte[]{(byte)0x69, (byte)0x7a, (byte)0x7a, (byte)0x79, (byte)0x6d, (byte)0x65, (byte)0x73, (byte)0x73, (byte)0x61, (byte)0x67, (byte)0x65}; // 'izzymessage'
-        this.length = toByteArray(31); // 1 preamble, 11 identifier, 2 length, 16 UUID, 1 type = 31 bytes
+        this.length = toByteArray(47); // 1 preamble, 11 identifier, 2 length, 16 SenderUUID, 16 Receiver UUID, 1 type = 47 bytes
         this.senderUUID = null;
-        this.uuidHigh = new byte[8];
-        this.uuidLow = new byte[8];
+        this.senderUUIDHigh = new byte[8];
+        this.senderUUIDLow = new byte[8];
+        this.receiverUUID = null;
+        this.receiverUUIDHigh = new byte[8];
+        this.receiverUUIDLow = new byte[8];
         this.messageType = messageType;
         this.data = null;
     }
@@ -35,17 +41,20 @@ public class HeartbeatMessage {
     public HeartbeatMessage(byte[] rawData) {
         this.preamble = 0x10;
         this.identifier = new byte[]{(byte)0x69, (byte)0x7a, (byte)0x7a, (byte)0x79, (byte)0x6d, (byte)0x65, (byte)0x73, (byte)0x73, (byte)0x61, (byte)0x67, (byte)0x65}; // 'izzymessage'
-        this.length = toByteArray(31); // 1 preamble, 11 identifier, 2 length, 16 UUID, 1 type = 31 bytes
+        this.length = toByteArray(47); // 1 preamble, 11 identifier, 2 length, 16 SenderUUID, 16 Receiver UUID, 1 type = 47 bytes
         this.senderUUID = null;
-        this.uuidHigh = new byte[8];
-        this.uuidLow = new byte[8];
+        this.senderUUIDHigh = new byte[8];
+        this.senderUUIDLow = new byte[8];
+        this.receiverUUID = null;
+        this.receiverUUIDHigh = new byte[8];
+        this.receiverUUIDLow = new byte[8];
         this.messageType = 0x00;
         if(!parsePacket(rawData)) throw new IllegalArgumentException("Not a valid message.");
     }
 
     public UUID getSenderUUID() {
         if(senderUUID == null) {
-            senderUUID = new UUID(toLong(uuidHigh), toLong(uuidLow));
+            senderUUID = new UUID(toLong(senderUUIDHigh), toLong(senderUUIDLow));
         }
         return senderUUID;
     }
@@ -54,8 +63,23 @@ public class HeartbeatMessage {
         this.senderUUID = uuid;
         long uuidMSB = senderUUID.getMostSignificantBits();
         long uuidLSB = senderUUID.getLeastSignificantBits();
-        uuidHigh = toByteArray(uuidMSB);
-        uuidLow = toByteArray(uuidLSB);
+        senderUUIDHigh = toByteArray(uuidMSB);
+        senderUUIDLow = toByteArray(uuidLSB);
+    }
+
+    public UUID getReceiverUUID() {
+        if(receiverUUID == null) {
+            receiverUUID = new UUID(toLong(receiverUUIDHigh), toLong(receiverUUIDLow));
+        }
+        return receiverUUID;
+    }
+
+    public void setReceiverUUID(UUID uuid) {
+        this.receiverUUID = uuid;
+        long uuidMSB = receiverUUID.getMostSignificantBits();
+        long uuidLSB = receiverUUID.getLeastSignificantBits();
+        receiverUUIDHigh = toByteArray(uuidMSB);
+        receiverUUIDLow = toByteArray(uuidLSB);
     }
 
     public byte getMessageType() {
@@ -72,7 +96,7 @@ public class HeartbeatMessage {
 
     public void setData(byte[] data) {
         this.data = data;
-        int length = 31 + data.length;
+        int length = 47 + data.length;
         this.length = toByteArray(length);
     }
 
@@ -81,8 +105,10 @@ public class HeartbeatMessage {
         stream.write(preamble);
         stream.write(identifier);
         stream.write(length);
-        stream.write(uuidHigh);
-        stream.write(uuidLow);
+        stream.write(senderUUIDHigh);
+        stream.write(senderUUIDLow);
+        stream.write(receiverUUIDHigh);
+        stream.write(receiverUUIDLow);
         stream.write(messageType);
         if(data != null) stream.write(data);
         return stream.toByteArray();
@@ -92,12 +118,13 @@ public class HeartbeatMessage {
         if(rawData[0] == preamble) {
             if(Arrays.equals(Arrays.copyOfRange(rawData, 1, 12), identifier)) {
                 if((rawData.length) == toInteger(Arrays.copyOfRange(rawData, 12, 14))) {
-                    this.uuidHigh = Arrays.copyOfRange(rawData, 14, 22);
-                    this.uuidLow = Arrays.copyOfRange(rawData, 22, 30);
-                    this.senderUUID = new UUID(toLong(uuidHigh), toLong(uuidLow));
-                    this.messageType = rawData[30];
-                    if (rawData.length > 31) {
-                        this.data = Arrays.copyOfRange(rawData, 31, rawData.length);
+                    this.senderUUIDHigh = Arrays.copyOfRange(rawData, 14, 22);
+                    this.senderUUIDLow = Arrays.copyOfRange(rawData, 22, 30);
+                    this.receiverUUIDHigh = Arrays.copyOfRange(rawData, 30, 38);
+                    this.receiverUUIDLow = Arrays.copyOfRange(rawData, 38, 46);
+                    this.messageType = rawData[46];
+                    if (rawData.length > 47) {
+                        this.data = Arrays.copyOfRange(rawData, 47, rawData.length);
                     } else {
                         this.data = null;
                     }

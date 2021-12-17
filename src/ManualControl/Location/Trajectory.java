@@ -1,11 +1,11 @@
-package Location;
+package ManualControl.Location;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
 
 import java.util.function.Function;
 
-import static Location.SimpsonsRule.integrate;
+import static ManualControl.Location.SimpsonsRule.integrate;
 
 public class Trajectory {
     private Position startPosition;

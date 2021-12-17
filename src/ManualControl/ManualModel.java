@@ -1,19 +1,17 @@
 package ManualControl;
 
-import IZZYCommunication.HeartbeatResponseListener;
-import Location.Position;
-import Location.StageArea;
-import Location.Trajectory;
+import ManualControl.Location.Position;
+import ManualControl.Location.StageArea;
+import ManualControl.Location.Trajectory;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import com.illposed.osc.OSCPortOut;
-import IZZYCommunication.HeartbeatSender;
-import IZZYCommunication.HeartbeatReceiver;
+import IZZYCommunication.Heartbeat.HeartbeatSender;
+import IZZYCommunication.Heartbeat.HeartbeatReceiver;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
-import Devices.IZZY;
-import Devices.Mother;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -21,7 +19,6 @@ import java.net.UnknownHostException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ManualModel {
     public OSCPortIn receiver = null;
@@ -36,14 +33,12 @@ public class ManualModel {
     InetAddress outgoingAddress = InetAddress.getByName("192.168.2.4");
     int outgoingPort = 8000;
 
-    private Mother mother = new Mother();
-    private HeartbeatSender heartbeatSender = new HeartbeatSender(mother);
-    private HeartbeatReceiver heartbeatReceiver = new HeartbeatReceiver();
+    private HeartbeatSender heartbeatSender = new HeartbeatSender(UUID.fromString("0a1821f3-4273-4f34-8be5-c167dd7669e2"));
+    private HeartbeatReceiver heartbeatReceiver = new HeartbeatReceiver(UUID.fromString("0a1821f3-4273-4f34-8be5-c167dd7669e2"));
     private ExecutorService executor = Executors.newFixedThreadPool(5);
 
     public ManualModel() throws UnknownHostException, IOException {
         currentInstance = this;
-        mother.setUUID(UUID.fromString("0a1821f3-4273-4f34-8be5-c167dd7669e2"));
 
         startHeartbeat();
     }
@@ -211,31 +206,24 @@ public class ManualModel {
     }
 
     private void startHeartbeat() throws SocketException, UnknownHostException {
-        heartbeatReceiver.setListener(
-                new HeartbeatResponseListener() {
-                    @Override
-                    public void onRemoteDeviceResponseReceived(IZZY izzy) {
-                        //System.out.println("Got here.");
-                        Iterator itr = mother.getIzzyUnits().iterator();
-                        boolean exists = false;
-                        while(itr.hasNext()) {
-                            IZZY itrIzzy = (IZZY)itr.next();
-                            if(itrIzzy.getUUID().equals(izzy.getUUID())) {
-                                itrIzzy.setStatus(izzy.getStatus());
-                                itrIzzy.setName(izzy.getName());
-                                exists = true;
-                            }
-                        }
-                        if(!exists) mother.getIzzyUnits().add(izzy);
-                    }
-
-                    @Override
-                    public void onRemoteDeviceTimeout() {
-                        //TODO: Implement some timeout features if no devices have connected
-                        return;
-                    }
-                }
-        );
+//        heartbeatReceiver.setListener(
+//                new HeartbeatResponseListener() {
+//                    @Override
+//                    public void onRemoteDeviceResponseReceived(IZZYStatus izzyStatus) {
+//                        //TODO: Implement Heartbeat in ManualControl
+//                    }
+//
+//                    @Override
+//                    public void onRemoteDeviceTimeout() {
+//                        //TODO: Implement some timeout features if no devices have connected
+//                    }
+//
+//                    @Override
+//                    public void onMotherDeviceTimeout() {
+//                        return;
+//                    }
+//                }
+//        );
 
         executor.submit(heartbeatSender);
         executor.submit(heartbeatReceiver);

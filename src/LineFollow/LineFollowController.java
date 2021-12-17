@@ -1,6 +1,11 @@
-package LineFollowMother;
+package LineFollow;
 
 import com.illposed.osc.OSCMessage;
+import IZZYCommunication.Heartbeat.IZZYStatus;
+
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,13 +13,21 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.io.IOException;
-import java.net.InetAddress;
 
-public class MotherLineFollowController {
+import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_SPEED;
+import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STATE;
+import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STOP;
+import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_TUNE;
+import static IZZYCommunication.LineFollowing.OSCAddresses.STOP_PROCESSING;
 
-    private static MotherLineFollowController currentInstance;
+public class LineFollowController {
+
+    LineFollowModel model;
+    IZZYStatus currentStatus;
+    Timeline statusBlinkerTimeline;
 
     @FXML
     Text driveSpeedValue;
@@ -58,32 +71,31 @@ public class MotherLineFollowController {
     Button setTuningButton;
     @FXML
     Text kErrorMessage;
-
-    public MotherLineFollowController() {
-        currentInstance = this;
-    }
+    @FXML
+    Circle connectionStatus;
+    @FXML
+    Text connectionStatusText;
 
     @FXML
     private void initialize() {
         try {
-            LineFollowModel.getCurrentInstance().startListening();
+            this.model = LineFollowModel.getCurrentInstance();
+            this.currentStatus = IZZYStatus.UNVERIFIED;
+            this.statusBlinkerTimeline = new Timeline();
+            model.setLineFollowController(this);
+            model.startListening();
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
-    }
-
-    public static MotherLineFollowController getCurrentInstance() {
-        return currentInstance;
     }
 
     @FXML
     public void startButtonClick(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/FollowLineState");
         outgoingMessage.addArgument("start");
-        outgoingMessage.addArgument(30);
+        outgoingMessage.addArgument((int) (speedControlSlider.getValue() + 0.5));
         try {
-            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+            model.sendMessage(outgoingMessage, FOLLOW_LINE_STATE);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -92,11 +104,10 @@ public class MotherLineFollowController {
     @FXML
     public void motionStopButtonClicked(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/FollowLineState");
         outgoingMessage.addArgument("stop");
-        outgoingMessage.addArgument(30);
+        outgoingMessage.addArgument((int) (speedControlSlider.getValue() + 0.5));
         try {
-            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+            model.sendMessage(outgoingMessage, FOLLOW_LINE_STATE);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -105,10 +116,9 @@ public class MotherLineFollowController {
     @FXML
     public void eStopButtonClicked(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/eStop");
         outgoingMessage.addArgument("eStop");
         try {
-            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+            model.sendMessage(outgoingMessage, FOLLOW_LINE_STOP);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -116,12 +126,10 @@ public class MotherLineFollowController {
 
     @FXML
     public void speedControlSliderDragged() {
-        System.out.println("Speed: " + (int) (speedControlSlider.getValue() + 0.5));
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/FollowLineSpeed");
         outgoingMessage.addArgument((int) (speedControlSlider.getValue() + 0.5));
         try {
-            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+            model.sendMessage(outgoingMessage, FOLLOW_LINE_SPEED);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -131,12 +139,11 @@ public class MotherLineFollowController {
     public void setTuningButtonClicked(ActionEvent e) {
         kErrorMessage.setVisible(false);
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/FollowLineTune");
         try {
             outgoingMessage.addArgument(Double.parseDouble(kpTextField.getText())); //kp
             outgoingMessage.addArgument(Double.parseDouble(kiTextField.getText())); //ki
             outgoingMessage.addArgument(Double.parseDouble(kdTextField.getText())); //kd
-            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+            model.sendMessage(outgoingMessage, FOLLOW_LINE_TUNE);
         } catch (NumberFormatException exception) {
             kErrorMessage.setVisible(true);
         } catch (IOException exception) {
@@ -147,9 +154,8 @@ public class MotherLineFollowController {
     @FXML
     public void stopIzzyProcessingButtonClicked(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
-        outgoingMessage.setAddress("/IZZY/StopProcessing");
         try {
-            LineFollowModel.getCurrentInstance().sendMessage(outgoingMessage);
+            model.sendMessage(outgoingMessage, STOP_PROCESSING);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -222,6 +228,43 @@ public class MotherLineFollowController {
             wirePositionSlider.setValue(0.7);
         } else if (!left && !center && right) {
             wirePositionSlider.setValue(0.9);
+        }
+    }
+
+    public void toggleConnectionStatus(IZZYStatus status) {
+        if (status == currentStatus) {
+            return;
+        }
+
+        switch (status) {
+            case AVAILABLE:
+                connectionStatus.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
+                connectionStatusText.setText("Connected");
+                break;
+            case MOVING:
+                connectionStatusText.setText("Moving");
+                statusBlinkerTimeline.stop();
+                statusBlinkerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(0, 141, 69))),
+                        new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(30, 255, 144))));
+                statusBlinkerTimeline.setCycleCount(Animation.INDEFINITE);
+                statusBlinkerTimeline.play();
+                break;
+            case MISSING:
+                connectionStatusText.setText("Missing");
+                connectionStatus.setFill(javafx.scene.paint.Color.rgb(255, 74, 74));
+                break;
+            case BROKEN:
+                connectionStatusText.setText("Critical Error");
+                statusBlinkerTimeline.stop();
+                statusBlinkerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(255, 74, 74))),
+                        new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(146, 42, 42))));
+                statusBlinkerTimeline.setCycleCount(Animation.INDEFINITE);
+                statusBlinkerTimeline.play();
+                break;
+            default:
+                connectionStatusText.setText("Unknown");
+                connectionStatus.setFill(javafx.scene.paint.Color.rgb(0, 0, 0));
+                break;
         }
     }
 

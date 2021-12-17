@@ -1,4 +1,4 @@
-package util;
+package IZZYCommunication.Heartbeat;
 
 /**
  * @author Rich Dionne
@@ -10,5 +10,7 @@ public enum IZZYStatus {
     MISSING,
     AVAILABLE,
     MOVING,
-    BROKEN;
+    ESTOP,
+    BROKEN,
+    UNVERIFIED
 }

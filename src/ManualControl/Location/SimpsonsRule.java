@@ -1,4 +1,4 @@
-package Location;
+package ManualControl.Location;
 
 public class SimpsonsRule {
 
