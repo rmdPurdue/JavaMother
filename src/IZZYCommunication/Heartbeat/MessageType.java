@@ -12,6 +12,7 @@ public enum MessageType {
     SETUP_ERROR((byte)0x03),
     MOVING ((byte)0x04),
     BROKEN ((byte)0x05),
+    OSC_COM_ERROR((byte)0x06),
     NOT_VALID((byte)0x00);
 
     private final byte value;

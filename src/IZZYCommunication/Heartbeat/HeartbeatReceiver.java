@@ -109,19 +109,17 @@ public class HeartbeatReceiver implements Runnable {
 
         switch (getMessageType(message.getMessageType())) {
             case HERE:
-                System.out.println("Got 'HERE' message.");
                 izzy.setStatus(IZZYStatus.AVAILABLE);
                 listenerMap.get(message.getSenderUUID()).onRemoteDeviceResponseReceived(IZZYStatus.AVAILABLE);
                 break;
             case MOVING:
-                System.out.println("Got 'MOVING' message.");
                 izzy.setStatus(IZZYStatus.MOVING);
                 listenerMap.get(message.getSenderUUID()).onRemoteDeviceResponseReceived(IZZYStatus.MOVING);
                 break;
             case SETUP_ERROR:
-                System.out.println("Error During IZZY Setup");
                 izzy.setStatus(IZZYStatus.BROKEN);
                 listenerMap.get(message.getSenderUUID()).onRemoteDeviceResponseReceived(IZZYStatus.BROKEN);
+                break;
             default:
                 System.out.println("Invalid Message Type");
                 break;

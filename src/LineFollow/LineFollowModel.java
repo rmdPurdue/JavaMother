@@ -68,8 +68,14 @@ public class LineFollowModel implements HeartbeatResponseListener {
             case FOLLOW_LINE_TUNE:
                 sender.sendLineTuneMessage(message);
                 break;
+            case FOLLOW_LINE_THRESHOLD:
+                sender.sendThresholdMessage(message);
+                break;
             case STOP_PROCESSING:
                 sender.sendLineStopMessage(message);
+                break;
+            case RESET_SYSTEM:
+                sender.sendLineResetMessage(message);
                 break;
             case FOLLOW_LINE_STOP:
                 sender.sendLineEStopMessage(message);

@@ -6,7 +6,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LineFollow.LineFollowController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LineFollow.LineFollowController">
     <top>
         <VBox spacing="10.0" BorderPane.alignment="CENTER">
             <children>
@@ -165,15 +165,35 @@
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Circle fx:id="sensorState0" fill="DODGERBLUE" radius="8.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" />
                   <Circle fx:id="sensorState1" fill="DODGERBLUE" layoutX="60.0" layoutY="25.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
                   <Circle fx:id="sensorState2" fill="DODGERBLUE" layoutX="60.0" layoutY="25.0" radius="8.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" />
+                  <Text fx:id="leftSensorAnalogLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="-----" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Text fx:id="centerSensorAnalogLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="-----" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Text fx:id="rightSensorAnalogLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="-----" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+                  <Text fx:id="leftSensorThresholdLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="-----" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="centerSensorThresholdLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="-----" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="rightSensorThresholdLabel" strokeType="OUTSIDE" strokeWidth="0.0" text="-----" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Text>
                </children>
             </GridPane>
             <Slider fx:id="wirePositionSlider" blockIncrement="0.1" disable="true" majorTickUnit="0.2" max="1.0" minorTickCount="0" showTickMarks="true" value="0.5" />
@@ -184,13 +204,13 @@
         </VBox>
     </left>
     <center>
-        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
             <children>
                 <Pane>
                <children>
                   <Button fx:id="motionStopButton" layoutY="148.0" mnemonicParsing="false" onAction="#motionStopButtonClicked" prefHeight="82.0" prefWidth="150.0" style="-fx-background-color: #F49F9F" text="Motion Stop" />
                   <Button fx:id="startButton" layoutY="-1.0" mnemonicParsing="false" onAction="#startButtonClick" prefHeight="137.0" prefWidth="150.0" style="-fx-background-color: #B7F49F" text="Start" />
-                  <Slider fx:id="speedControlSlider" blockIncrement="5.0" layoutX="150.0" layoutY="29.0" max="50.0" minorTickCount="5" onMouseReleased="#speedControlSliderDragged" orientation="VERTICAL" prefHeight="249.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" value="20.0" />
+                  <Slider fx:id="speedControlSlider" blockIncrement="5.0" layoutX="150.0" layoutY="29.0" minorTickCount="5" onMouseReleased="#speedControlSliderDragged" orientation="VERTICAL" prefHeight="249.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" value="25.0" />
                   <Label alignment="CENTER" layoutX="150.0" layoutY="6.0" prefWidth="100.0" text="Speed Control" textAlignment="CENTER" />
                </children>
                 </Pane>
@@ -203,13 +223,18 @@
    <right>
       <VBox alignment="TOP_CENTER" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
+            <Label text="PID Tuning:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
+            </Label>
             <HBox>
                <children>
                   <Label minWidth="20.0" text="Kp" />
                   <TextField fx:id="kpTextField" />
                </children>
                <VBox.margin>
-                  <Insets bottom="10.0" />
+                  <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </HBox>
             <HBox>
@@ -230,17 +255,53 @@
                   <Insets bottom="10.0" />
                </VBox.margin>
             </HBox>
-            <Button fx:id="setTuningButton" mnemonicParsing="false" onAction="#setTuningButtonClicked" text="Set" />
+            <Button fx:id="setTuningButton" mnemonicParsing="false" onAction="#setTuningButtonClicked" text="Set Tuning" />
             <Text fx:id="kErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoints (numeric)" visible="false">
                <VBox.margin>
                   <Insets top="10.0" />
                </VBox.margin>
             </Text>
-            <Button fx:id="eStopButton" mnemonicParsing="false" onAction="#eStopButtonClicked" prefHeight="82.0" prefWidth="150.0" style="-fx-background-color: #000000" text="E-Stop" textFill="RED">
+            <Label text="Threshold:">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font>
                <VBox.margin>
-                  <Insets top="12.0" />
+                  <Insets />
                </VBox.margin>
-            </Button>
+            </Label>
+            <HBox layoutX="10.0" layoutY="107.0">
+               <children>
+                  <Label minWidth="40.0" text="Left" />
+                  <TextField fx:id="leftThresholdTextField" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="72.0">
+               <children>
+                  <Label minWidth="40.0" text="Center" />
+                  <TextField fx:id="centerThresholdTextField" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="271.0">
+               <children>
+                  <Label minWidth="40.0" text="Right" />
+                  <TextField fx:id="rightThresholdTextField" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
+            <Button fx:id="setThresholdButton" mnemonicParsing="false" onAction="#setThresholdButtonClicked" text="Set Threshold" />
+            <Text fx:id="thresholdErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoint (integer)" visible="false">
+               <VBox.margin>
+                  <Insets bottom="5.0" top="5.0" />
+               </VBox.margin>
+            </Text>
          </children>
       </VBox>
    </right>
@@ -248,31 +309,51 @@
       <Insets right="20.0" />
    </padding>
    <bottom>
-      <HBox prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_RIGHT" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Label prefHeight="123.0" prefWidth="250.0" text="ERROR: Error Message Would Appear Here" textAlignment="CENTER" HBox.hgrow="ALWAYS">
+            <VBox alignment="CENTER" prefWidth="238.0">
+               <children>
+                  <Button fx:id="eStopButton" mnemonicParsing="false" onAction="#eStopButtonClicked" prefHeight="50.0" prefWidth="250.0" style="-fx-background-color: #000000" text="E-Stop" textFill="RED">
+                     <VBox.margin>
+                        <Insets top="12.0" />
+                     </VBox.margin>
+                  </Button>
+               </children>
                <HBox.margin>
-                  <Insets bottom="10.0" left="20.0" right="50.0" top="10.0" />
+                  <Insets right="15.0" />
                </HBox.margin>
-            </Label>
-            <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="ACKNOWLEDGE">
-               <HBox.margin>
-                  <Insets right="10.0" top="46.0" />
-               </HBox.margin>
-            </Button>
+            </VBox>
             <VBox prefWidth="238.0">
+               <children>
+                  <Label minHeight="50.0" prefWidth="250.0" text="ERROR: Error Message Would Appear Here" textAlignment="CENTER">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin></Label>
+                  <Button disable="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="ACKNOWLEDGE">
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin></Button>
+               </children>
+               <HBox.margin>
+                  <Insets left="15.0" right="15.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox alignment="CENTER" prefWidth="238.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#stopIzzyProcessingButtonClicked" prefHeight="50.0" prefWidth="250.0" text="Power Down">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="250.0" text="Reset System">
+                  <Button mnemonicParsing="false" onAction="#resetSystemButtonClicked" prefHeight="50.0" prefWidth="250.0" text="Reset System">
                      <VBox.margin>
                         <Insets bottom="10.0" top="10.0" />
                      </VBox.margin>
                   </Button>
                </children>
+               <HBox.margin>
+                  <Insets left="15.0" />
+               </HBox.margin>
             </VBox>
          </children>
       </HBox>

@@ -8,7 +8,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Circle;
@@ -20,7 +19,9 @@ import java.io.IOException;
 import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_SPEED;
 import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STATE;
 import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STOP;
+import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_THRESHOLD;
 import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_TUNE;
+import static IZZYCommunication.LineFollowing.OSCAddresses.RESET_SYSTEM;
 import static IZZYCommunication.LineFollowing.OSCAddresses.STOP_PROCESSING;
 
 public class LineFollowController {
@@ -52,13 +53,19 @@ public class LineFollowController {
     @FXML
     Circle sensorState2;
     @FXML
+    Text rightSensorAnalogLabel;
+    @FXML
+    Text rightSensorThresholdLabel;
+    @FXML
+    Text centerSensorAnalogLabel;
+    @FXML
+    Text centerSensorThresholdLabel;
+    @FXML
+    Text leftSensorAnalogLabel;
+    @FXML
+    Text leftSensorThresholdLabel;
+    @FXML
     Slider wirePositionSlider;
-    @FXML
-    Button eStopButton;
-    @FXML
-    Button startButton;
-    @FXML
-    Button motionStopButton;
     @FXML
     Slider speedControlSlider;
     @FXML
@@ -68,9 +75,15 @@ public class LineFollowController {
     @FXML
     TextField kdTextField;
     @FXML
-    Button setTuningButton;
-    @FXML
     Text kErrorMessage;
+    @FXML
+    Text thresholdErrorMessage;
+    @FXML
+    TextField leftThresholdTextField;
+    @FXML
+    TextField centerThresholdTextField;
+    @FXML
+    TextField rightThresholdTextField;
     @FXML
     Circle connectionStatus;
     @FXML
@@ -152,10 +165,36 @@ public class LineFollowController {
     }
 
     @FXML
+    public void setThresholdButtonClicked(ActionEvent e) {
+        thresholdErrorMessage.setVisible(false);
+        OSCMessage outgoingMessage = new OSCMessage();
+        try {
+            outgoingMessage.addArgument(Integer.parseInt(leftThresholdTextField.getText()));
+            outgoingMessage.addArgument(Integer.parseInt(centerThresholdTextField.getText()));
+            outgoingMessage.addArgument(Integer.parseInt(rightThresholdTextField.getText()));
+            model.sendMessage(outgoingMessage, FOLLOW_LINE_THRESHOLD);
+        } catch (NumberFormatException exception) {
+            thresholdErrorMessage.setVisible(true);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @FXML
     public void stopIzzyProcessingButtonClicked(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
         try {
             model.sendMessage(outgoingMessage, STOP_PROCESSING);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void resetSystemButtonClicked(ActionEvent e) {
+        OSCMessage outgoingMessage = new OSCMessage();
+        try {
+            model.sendMessage(outgoingMessage, RESET_SYSTEM);
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -185,6 +224,18 @@ public class LineFollowController {
         kdValue.setText(Double.toString(kD));
     }
 
+    public void setLeftThresholdValue(int threshold) {
+        leftSensorThresholdLabel.setText(Integer.toString(threshold));
+    }
+
+    public void setCenterThresholdValue(int threshold) {
+        centerSensorThresholdLabel.setText(Integer.toString(threshold));
+    }
+
+    public void setRightThresholdValue(int threshold) {
+        rightSensorThresholdLabel.setText(Integer.toString(threshold));
+    }
+
     public void setCurrentState(String currentState) {
         currentStateValue.setText(currentState);
     }
@@ -193,28 +244,31 @@ public class LineFollowController {
         exceptionsValue.setText(exceptions);
     }
 
-    public void toggleLeftSensor(boolean reading) {
+    public void toggleLeftSensor(boolean reading, int analogValue) {
         if (reading) {
             sensorState0.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
         } else {
             sensorState0.setFill(javafx.scene.paint.Color.rgb(30, 144, 255));
         }
+        leftSensorAnalogLabel.setText(Integer.toString(analogValue));
     }
 
-    public void toggleCenterSensor(boolean reading) {
+    public void toggleCenterSensor(boolean reading, int analogValue) {
         if (reading) {
             sensorState1.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
         } else {
             sensorState1.setFill(javafx.scene.paint.Color.rgb(30, 144, 255));
         }
+        centerSensorAnalogLabel.setText(Integer.toString(analogValue));
     }
 
-    public void toggleRightSensor(boolean reading) {
+    public void toggleRightSensor(boolean reading, int analogValue) {
         if (reading) {
             sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
         } else {
             sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 144, 255));
         }
+        rightSensorAnalogLabel.setText(Integer.toString(analogValue));
     }
 
     public void setWirePosition(boolean left, boolean center, boolean right) {
