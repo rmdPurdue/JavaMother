@@ -194,6 +194,7 @@ public class LineFollowController {
     public void resetSystemButtonClicked(ActionEvent e) {
         OSCMessage outgoingMessage = new OSCMessage();
         try {
+            model.restartLogging();
             model.sendMessage(outgoingMessage, RESET_SYSTEM);
         } catch (IOException exception) {
             exception.printStackTrace();

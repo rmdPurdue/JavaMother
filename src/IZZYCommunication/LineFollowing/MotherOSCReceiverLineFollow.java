@@ -2,6 +2,7 @@ package IZZYCommunication.LineFollowing;
 
 import IZZYCommunication.MotherOSCReceiver;
 import LineFollow.LineFollowController;
+import LineFollow.LineFollowSensorLogger;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 
@@ -12,6 +13,7 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
 
     private LineFollowController lineFollowController;
     private final OSCListener listener;
+    private final LineFollowSensorLogger sensorLogger;
     private static final int DRIVE_SPEED_INDEX = 0;
     private static final int ERROR_CORRECTION_SET_POINT_INDEX = 1;
     private static final int ERROR_ANGLE_INDEX = 2;
@@ -29,11 +31,20 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
     private static final int CENTER_SENSOR_THRESHOLD_INDEX = 14;
     private static final int RIGHT_SENSOR_THRESHOLD_INDEX = 15;
 
+    public MotherOSCReceiverLineFollow(InetAddress inetAddress, LineFollowSensorLogger sensorLogger) throws SocketException {
+        super(inetAddress);
+        this.listener = (time, message) -> {
+            OSCParser(message);
+        };
+        this.sensorLogger = sensorLogger;
+    }
+
     public MotherOSCReceiverLineFollow(InetAddress inetAddress) throws SocketException {
         super(inetAddress);
         this.listener = (time, message) -> {
             OSCParser(message);
         };
+        this.sensorLogger = null;
     }
 
     public void eStopOSC(OSCMessage msg) {
@@ -79,6 +90,8 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
 
 
     private void logAnalogValues(int left, int center, int right) {
-        System.out.println(left + "," + center + "," + right);
+        if (sensorLogger != null) {
+            sensorLogger.logAnalogValues(left, center, right);
+        }
     }
 }

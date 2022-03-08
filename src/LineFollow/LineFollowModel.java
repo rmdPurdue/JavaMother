@@ -9,6 +9,7 @@ import IZZYCommunication.Heartbeat.HeartbeatSender;
 import IZZYCommunication.Heartbeat.HeartbeatReceiver;
 import IZZYCommunication.Heartbeat.IZZYStatus;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -23,8 +24,9 @@ public class LineFollowModel implements HeartbeatResponseListener {
     private final HeartbeatReceiver heartbeatReceiver;
     private final InetAddress outgoingAddress;
     private final MotherOSCSenderLineFollow sender;
-    private final MotherOSCReceiverLineFollow receiver;
+    private MotherOSCReceiverLineFollow receiver;
     private LineFollowController lineFollowController;
+    private LineFollowSensorLogger sensorLogger;
 
     public LineFollowModel(InetAddress ipAddress) throws UnknownHostException, SocketException {
         currentInstance = this;
@@ -33,9 +35,15 @@ public class LineFollowModel implements HeartbeatResponseListener {
         this.heartbeatReceiver = HeartbeatReceiver.getCurrentInstance();
         this.outgoingAddress = ipAddress;
         startHeartbeat();
-
         this.sender = new MotherOSCSenderLineFollow(ipAddress);
-        this.receiver = new MotherOSCReceiverLineFollow(ipAddress);
+
+        try {
+            this.sensorLogger = new LineFollowSensorLogger();
+            this.receiver = new MotherOSCReceiverLineFollow(ipAddress, sensorLogger);
+        } catch (FileNotFoundException e) {
+            this.receiver = new MotherOSCReceiverLineFollow(ipAddress);
+            e.printStackTrace();
+        }
     }
 
     public static LineFollowModel getCurrentInstance() {
@@ -99,6 +107,12 @@ public class LineFollowModel implements HeartbeatResponseListener {
 
     private void stopHeartbeat() {
         heartbeatSender.removeIzzy(izzyUUID);
+    }
+
+    public void restartLogging() {
+        if (sensorLogger != null) {
+            sensorLogger.newFile();
+        }
     }
 
     /**
