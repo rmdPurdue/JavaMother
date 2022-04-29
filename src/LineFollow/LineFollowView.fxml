@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LineFollow.LineFollowController">
+<BorderPane fx:id="lineFollowPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="493.0" minWidth="795.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LineFollow.LineFollowController">
     <top>
         <VBox spacing="10.0" BorderPane.alignment="CENTER">
             <children>
@@ -15,7 +16,7 @@
                         <Font name="Arial" size="24.0" />
                     </font>
                     <padding>
-                        <Insets bottom="5.0" left="20.0" right="10.0" top="5.0" />
+                        <Insets bottom="5.0" right="10.0" top="5.0" />
                     </padding>
                 </Label>
             </children>
@@ -25,7 +26,7 @@
         </VBox>
     </top>
     <left>
-        <VBox spacing="10.0" BorderPane.alignment="CENTER">
+        <VBox minWidth="270.0" prefHeight="382.0" prefWidth="320.0" spacing="10.0" BorderPane.alignment="CENTER">
             <children>
                 <Label text="IZZY Status">
                     <font>
@@ -199,117 +200,15 @@
             <Slider fx:id="wirePositionSlider" blockIncrement="0.1" disable="true" majorTickUnit="0.2" max="1.0" minorTickCount="0" showTickMarks="true" value="0.5" />
             </children>
             <padding>
-                <Insets bottom="20.0" left="20.0" right="10.0" top="5.0" />
+                <Insets bottom="20.0" right="10.0" top="5.0" />
             </padding>
         </VBox>
     </left>
-    <center>
-        <VBox alignment="CENTER" spacing="10.0" BorderPane.alignment="CENTER">
-            <children>
-                <Pane>
-               <children>
-                  <Button fx:id="motionStopButton" layoutY="148.0" mnemonicParsing="false" onAction="#motionStopButtonClicked" prefHeight="82.0" prefWidth="150.0" style="-fx-background-color: #F49F9F" text="Motion Stop" />
-                  <Button fx:id="startButton" layoutY="-1.0" mnemonicParsing="false" onAction="#startButtonClick" prefHeight="137.0" prefWidth="150.0" style="-fx-background-color: #B7F49F" text="Start" />
-                  <Slider fx:id="speedControlSlider" blockIncrement="5.0" layoutX="150.0" layoutY="29.0" minorTickCount="5" onMouseReleased="#speedControlSliderDragged" orientation="VERTICAL" prefHeight="249.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" value="25.0" />
-                  <Label alignment="CENTER" layoutX="150.0" layoutY="6.0" prefWidth="100.0" text="Speed Control" textAlignment="CENTER" />
-               </children>
-                </Pane>
-            </children>
-            <padding>
-                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-            </padding>
-        </VBox>
-    </center>
-   <right>
-      <VBox alignment="TOP_CENTER" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="PID Tuning:">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-            </Label>
-            <HBox>
-               <children>
-                  <Label minWidth="20.0" text="Kp" />
-                  <TextField fx:id="kpTextField" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label minWidth="20.0" text="Ki" />
-                  <TextField fx:id="kiTextField" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox>
-               <children>
-                  <Label minWidth="20.0" text="Kd" />
-                  <TextField fx:id="kdTextField" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </HBox>
-            <Button fx:id="setTuningButton" mnemonicParsing="false" onAction="#setTuningButtonClicked" text="Set Tuning" />
-            <Text fx:id="kErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoints (numeric)" visible="false">
-               <VBox.margin>
-                  <Insets top="10.0" />
-               </VBox.margin>
-            </Text>
-            <Label text="Threshold:">
-               <font>
-                  <Font name="System Bold" size="12.0" />
-               </font>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </Label>
-            <HBox layoutX="10.0" layoutY="107.0">
-               <children>
-                  <Label minWidth="40.0" text="Left" />
-                  <TextField fx:id="leftThresholdTextField" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </HBox>
-            <HBox layoutX="10.0" layoutY="72.0">
-               <children>
-                  <Label minWidth="40.0" text="Center" />
-                  <TextField fx:id="centerThresholdTextField" />
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-            <HBox layoutX="10.0" layoutY="271.0">
-               <children>
-                  <Label minWidth="40.0" text="Right" />
-                  <TextField fx:id="rightThresholdTextField" />
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" top="10.0" />
-               </VBox.margin>
-            </HBox>
-            <Button fx:id="setThresholdButton" mnemonicParsing="false" onAction="#setThresholdButtonClicked" text="Set Threshold" />
-            <Text fx:id="thresholdErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoint (integer)" visible="false">
-               <VBox.margin>
-                  <Insets bottom="5.0" top="5.0" />
-               </VBox.margin>
-            </Text>
-         </children>
-      </VBox>
-   </right>
    <padding>
-      <Insets right="20.0" />
+      <Insets left="20.0" right="20.0" />
    </padding>
    <bottom>
-      <HBox alignment="CENTER_RIGHT" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
             <VBox alignment="CENTER" prefWidth="238.0">
                <children>
@@ -325,7 +224,7 @@
             </VBox>
             <VBox prefWidth="238.0">
                <children>
-                  <Label minHeight="50.0" prefWidth="250.0" text="ERROR: Error Message Would Appear Here" textAlignment="CENTER">
+                  <Label minHeight="50.0" prefWidth="250.0" text="ERROR: Error Message Would Appear Here" textAlignment="CENTER" visible="false">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin></Label>
@@ -356,6 +255,137 @@
                </HBox.margin>
             </VBox>
          </children>
+         <BorderPane.margin>
+            <Insets left="20.0" right="20.0" />
+         </BorderPane.margin>
       </HBox>
    </bottom>
+   <right>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+              <VBox alignment="TOP_CENTER" prefWidth="300.0" spacing="10.0">
+                  <children>
+                      <Pane minWidth="270.0">
+                     <children>
+                        <Button fx:id="motionStopButton" layoutY="148.0" mnemonicParsing="false" onAction="#motionStopButtonClicked" prefHeight="82.0" prefWidth="150.0" style="-fx-background-color: #F49F9F" text="Motion Stop" />
+                        <Button fx:id="startButton" layoutY="-1.0" mnemonicParsing="false" onAction="#startButtonClick" prefHeight="137.0" prefWidth="150.0" style="-fx-background-color: #B7F49F" text="Start" />
+                        <Slider fx:id="speedControlSlider" blockIncrement="5.0" layoutX="150.0" layoutY="29.0" minorTickCount="5" onMouseReleased="#speedControlSliderDragged" orientation="VERTICAL" prefHeight="249.0" prefWidth="100.0" showTickLabels="true" showTickMarks="true" value="25.0" />
+                        <Label alignment="CENTER" layoutX="150.0" layoutY="6.0" prefWidth="100.0" text="Speed Control" textAlignment="CENTER" />
+                     </children>
+                      </Pane>
+                  </children>
+                  <padding>
+                      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                  </padding>
+              </VBox>
+            <VBox alignment="TOP_CENTER" prefWidth="100.0">
+               <children>
+                  <Label text="PID Tuning:">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Label>
+                  <HBox>
+                     <children>
+                        <Label minWidth="20.0" text="Kp" />
+                        <TextField fx:id="kpTextField" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label minWidth="20.0" text="Ki" />
+                        <TextField fx:id="kiTextField" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label minWidth="20.0" text="Kd" />
+                        <TextField fx:id="kdTextField" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Button fx:id="setTuningButton" mnemonicParsing="false" onAction="#setTuningButtonClicked" text="Set Tuning" />
+                  <Text fx:id="kErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoints (numeric)" visible="false">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Label text="Threshold:">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Label>
+                  <HBox layoutX="10.0" layoutY="107.0">
+                     <children>
+                        <Label minWidth="40.0" text="Left" />
+                        <TextField fx:id="leftThresholdTextField" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="72.0">
+                     <children>
+                        <Label minWidth="40.0" text="Center" />
+                        <TextField fx:id="centerThresholdTextField" />
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox layoutX="10.0" layoutY="271.0">
+                     <children>
+                        <Label minWidth="40.0" text="Right" />
+                        <TextField fx:id="rightThresholdTextField" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Button fx:id="setThresholdButton" mnemonicParsing="false" onAction="#setThresholdButtonClicked" text="Set Threshold" />
+                  <Text fx:id="thresholdErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoint (integer)" visible="false">
+                     <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                     </VBox.margin>
+                  </Text>
+                  <Button mnemonicParsing="false" onAction="#clearPlotButtonClicked" text="Clear Plot &amp; New CSV" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </right>
+   <center>
+      <TabPane prefWidth="305.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab text="Log Output">
+              <content>
+                  <TextArea fx:id="logTextArea" editable="false" prefHeight="327.0" prefWidth="304.0" />
+              </content>
+          </Tab>
+          <Tab text="Scatter Plot">
+              <content>
+                  <ScatterChart fx:id="scatterChart">
+                      <xAxis>
+                          <NumberAxis label="Seconds" side="BOTTOM" />
+                      </xAxis>
+                      <yAxis>
+                          <NumberAxis label="Sensor Reading" side="LEFT" />
+                      </yAxis>
+                  </ScatterChart>
+              </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </center>
 </BorderPane>

@@ -3,6 +3,7 @@ package IZZYCommunication.LineFollowing;
 import IZZYCommunication.MotherOSCReceiver;
 import LineFollow.LineFollowController;
 import LineFollow.LineFollowSensorLogger;
+import LineFollow.Plotting.PlotLoop;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 
@@ -14,6 +15,7 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
     private LineFollowController lineFollowController;
     private final OSCListener listener;
     private final LineFollowSensorLogger sensorLogger;
+    private final PlotLoop plotLoop;
     private static final int DRIVE_SPEED_INDEX = 0;
     private static final int ERROR_CORRECTION_SET_POINT_INDEX = 1;
     private static final int ERROR_ANGLE_INDEX = 2;
@@ -31,12 +33,13 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
     private static final int CENTER_SENSOR_THRESHOLD_INDEX = 14;
     private static final int RIGHT_SENSOR_THRESHOLD_INDEX = 15;
 
-    public MotherOSCReceiverLineFollow(InetAddress inetAddress, LineFollowSensorLogger sensorLogger) throws SocketException {
+    public MotherOSCReceiverLineFollow(InetAddress inetAddress, LineFollowSensorLogger sensorLogger, PlotLoop plotLoop) throws SocketException {
         super(inetAddress);
         this.listener = (time, message) -> {
             OSCParser(message);
         };
         this.sensorLogger = sensorLogger;
+        this.plotLoop = plotLoop;
     }
 
     public MotherOSCReceiverLineFollow(InetAddress inetAddress) throws SocketException {
@@ -45,6 +48,7 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
             OSCParser(message);
         };
         this.sensorLogger = null;
+        this.plotLoop = null;
     }
 
     public void eStopOSC(OSCMessage msg) {
@@ -85,6 +89,9 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
             logAnalogValues((int) message.getArguments().get(LEFT_SENSOR_ANALOG_INDEX),
                     (int) message.getArguments().get(CENTER_SENSOR_ANALOG_INDEX),
                     (int) message.getArguments().get(RIGHT_SENSOR_ANALOG_INDEX));
+            plotAnalogValues((int) message.getArguments().get(LEFT_SENSOR_ANALOG_INDEX),
+                    (int) message.getArguments().get(CENTER_SENSOR_ANALOG_INDEX),
+                    (int) message.getArguments().get(RIGHT_SENSOR_ANALOG_INDEX));
         }
     }
 
@@ -92,6 +99,12 @@ public class MotherOSCReceiverLineFollow extends MotherOSCReceiver {
     private void logAnalogValues(int left, int center, int right) {
         if (sensorLogger != null) {
             sensorLogger.logAnalogValues(left, center, right);
+        }
+    }
+
+    private void plotAnalogValues(int left, int center, int right) {
+        if (plotLoop != null) {
+            plotLoop.plotData(left, center, right);
         }
     }
 }

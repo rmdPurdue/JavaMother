@@ -6,10 +6,14 @@ import IZZYCommunication.Heartbeat.IZZYStatus;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
@@ -88,6 +92,12 @@ public class LineFollowController {
     Circle connectionStatus;
     @FXML
     Text connectionStatusText;
+    @FXML
+    TextArea logTextArea;
+    @FXML
+    ScatterChart<Double, Integer> scatterChart;
+    @FXML
+    BorderPane lineFollowPane;
 
     @FXML
     private void initialize() {
@@ -150,7 +160,7 @@ public class LineFollowController {
 
     @FXML
     public void setTuningButtonClicked(ActionEvent e) {
-        kErrorMessage.setVisible(false);
+        Platform.runLater(() -> kErrorMessage.setVisible(false));
         OSCMessage outgoingMessage = new OSCMessage();
         try {
             outgoingMessage.addArgument(Double.parseDouble(kpTextField.getText())); //kp
@@ -158,7 +168,7 @@ public class LineFollowController {
             outgoingMessage.addArgument(Double.parseDouble(kdTextField.getText())); //kd
             model.sendMessage(outgoingMessage, FOLLOW_LINE_TUNE);
         } catch (NumberFormatException exception) {
-            kErrorMessage.setVisible(true);
+            Platform.runLater(() -> kErrorMessage.setVisible(true));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
@@ -166,7 +176,7 @@ public class LineFollowController {
 
     @FXML
     public void setThresholdButtonClicked(ActionEvent e) {
-        thresholdErrorMessage.setVisible(false);
+        Platform.runLater(() -> thresholdErrorMessage.setVisible(false));
         OSCMessage outgoingMessage = new OSCMessage();
         try {
             outgoingMessage.addArgument(Integer.parseInt(leftThresholdTextField.getText()));
@@ -174,10 +184,16 @@ public class LineFollowController {
             outgoingMessage.addArgument(Integer.parseInt(rightThresholdTextField.getText()));
             model.sendMessage(outgoingMessage, FOLLOW_LINE_THRESHOLD);
         } catch (NumberFormatException exception) {
-            thresholdErrorMessage.setVisible(true);
+            Platform.runLater(() -> thresholdErrorMessage.setVisible(true));
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    @FXML
+    public void clearPlotButtonClicked(ActionEvent e) {
+        model.clearPlotData();
+        model.restartLogging();
     }
 
     @FXML
@@ -195,6 +211,7 @@ public class LineFollowController {
         OSCMessage outgoingMessage = new OSCMessage();
         try {
             model.restartLogging();
+            model.clearPlotData();
             model.sendMessage(outgoingMessage, RESET_SYSTEM);
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -202,87 +219,87 @@ public class LineFollowController {
     }
 
     public void setDriveSpeed(int driveSpeed) {
-        driveSpeedValue.setText(Integer.toString(driveSpeed));
+        Platform.runLater(() -> driveSpeedValue.setText(Integer.toString(driveSpeed)));
     }
 
     public void setErrorCorrectionSetPoint(double errorCorrectionSetPoint) {
-        errorCorrectionSetPointValue.setText(Double.toString(errorCorrectionSetPoint));
+        Platform.runLater(() -> errorCorrectionSetPointValue.setText(Double.toString(errorCorrectionSetPoint)));
     }
 
     public void setErrorAngle(double errorAngle) {
-        errorAngleValue.setText(Double.toString(errorAngle));
+        Platform.runLater(() -> errorAngleValue.setText(Double.toString(errorAngle)));
     }
 
     public void setKP(double kP) {
-        kpValue.setText(Double.toString(kP));
+        Platform.runLater(() -> kpValue.setText(Double.toString(kP)));
     }
 
     public void setKI(double kI) {
-        kiValue.setText(Double.toString(kI));
+        Platform.runLater(() -> kiValue.setText(Double.toString(kI)));
     }
 
     public void setKD(double kD) {
-        kdValue.setText(Double.toString(kD));
+        Platform.runLater(() -> kdValue.setText(Double.toString(kD)));
     }
 
     public void setLeftThresholdValue(int threshold) {
-        leftSensorThresholdLabel.setText(Integer.toString(threshold));
+        Platform.runLater(() -> leftSensorThresholdLabel.setText(Integer.toString(threshold)));
     }
 
     public void setCenterThresholdValue(int threshold) {
-        centerSensorThresholdLabel.setText(Integer.toString(threshold));
+        Platform.runLater(() -> centerSensorThresholdLabel.setText(Integer.toString(threshold)));
     }
 
     public void setRightThresholdValue(int threshold) {
-        rightSensorThresholdLabel.setText(Integer.toString(threshold));
+        Platform.runLater(() -> rightSensorThresholdLabel.setText(Integer.toString(threshold)));
     }
 
     public void setCurrentState(String currentState) {
-        currentStateValue.setText(currentState);
+        Platform.runLater(() -> currentStateValue.setText(currentState));
     }
 
     public void setExceptions(String exceptions) {
-        exceptionsValue.setText(exceptions);
+        Platform.runLater(() -> exceptionsValue.setText(exceptions));
     }
 
     public void toggleLeftSensor(boolean reading, int analogValue) {
         if (reading) {
-            sensorState0.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
+            Platform.runLater(() -> sensorState0.setFill(javafx.scene.paint.Color.rgb(30, 255, 144)));
         } else {
-            sensorState0.setFill(javafx.scene.paint.Color.rgb(30, 144, 255));
+            Platform.runLater(() -> sensorState0.setFill(javafx.scene.paint.Color.rgb(30, 144, 255)));
         }
-        leftSensorAnalogLabel.setText(Integer.toString(analogValue));
+        Platform.runLater(() -> leftSensorAnalogLabel.setText(Integer.toString(analogValue)));
     }
 
     public void toggleCenterSensor(boolean reading, int analogValue) {
         if (reading) {
-            sensorState1.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
+            Platform.runLater(() -> sensorState1.setFill(javafx.scene.paint.Color.rgb(30, 255, 144)));
         } else {
-            sensorState1.setFill(javafx.scene.paint.Color.rgb(30, 144, 255));
+            Platform.runLater(() -> sensorState1.setFill(javafx.scene.paint.Color.rgb(30, 144, 255)));
         }
-        centerSensorAnalogLabel.setText(Integer.toString(analogValue));
+        Platform.runLater(() -> centerSensorAnalogLabel.setText(Integer.toString(analogValue)));
     }
 
     public void toggleRightSensor(boolean reading, int analogValue) {
         if (reading) {
-            sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
+            Platform.runLater(() -> sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 255, 144)));
         } else {
-            sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 144, 255));
+            Platform.runLater(() -> sensorState2.setFill(javafx.scene.paint.Color.rgb(30, 144, 255)));
         }
-        rightSensorAnalogLabel.setText(Integer.toString(analogValue));
+        Platform.runLater(() -> rightSensorAnalogLabel.setText(Integer.toString(analogValue)));
     }
 
     public void setWirePosition(boolean left, boolean center, boolean right) {
         if (left && !center && !right) {
-            wirePositionSlider.setValue(0.1);
+            Platform.runLater(() -> wirePositionSlider.setValue(0.1));
         } else if (left && center && !right) {
-            wirePositionSlider.setValue(0.3);
+            Platform.runLater(() -> wirePositionSlider.setValue(0.3));
         } else if (!left && center && !right) {
-            wirePositionSlider.setValue(0.5);
+            Platform.runLater(() -> wirePositionSlider.setValue(0.5));
         } else if (!left && center && right) {
-            wirePositionSlider.setValue(0.7);
+            Platform.runLater(() -> wirePositionSlider.setValue(0.7));
         } else if (!left && !center && right) {
-            wirePositionSlider.setValue(0.9);
+            Platform.runLater(() -> wirePositionSlider.setValue(0.9));
         }
     }
 
@@ -293,34 +310,51 @@ public class LineFollowController {
 
         switch (status) {
             case AVAILABLE:
-                connectionStatus.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
-                connectionStatusText.setText("Connected");
+                Platform.runLater(() -> {
+                    connectionStatus.setFill(javafx.scene.paint.Color.rgb(30, 255, 144));
+                    connectionStatusText.setText("Connected");
+                });
                 break;
             case MOVING:
-                connectionStatusText.setText("Moving");
-                statusBlinkerTimeline.stop();
-                statusBlinkerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(0, 141, 69))),
-                        new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(30, 255, 144))));
-                statusBlinkerTimeline.setCycleCount(Animation.INDEFINITE);
-                statusBlinkerTimeline.play();
+                Platform.runLater(() -> {
+                    connectionStatusText.setText("Moving");
+                    statusBlinkerTimeline.stop();
+                    statusBlinkerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(0, 141, 69))),
+                            new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(30, 255, 144))));
+                    statusBlinkerTimeline.setCycleCount(Animation.INDEFINITE);
+                    statusBlinkerTimeline.play();
+                });
                 break;
             case MISSING:
-                connectionStatusText.setText("Missing");
-                connectionStatus.setFill(javafx.scene.paint.Color.rgb(255, 74, 74));
+                Platform.runLater(() -> {
+                    connectionStatusText.setText("Missing");
+                    connectionStatus.setFill(javafx.scene.paint.Color.rgb(255, 74, 74));
+                });
                 break;
             case BROKEN:
-                connectionStatusText.setText("Critical Error");
-                statusBlinkerTimeline.stop();
-                statusBlinkerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(255, 74, 74))),
-                        new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(146, 42, 42))));
-                statusBlinkerTimeline.setCycleCount(Animation.INDEFINITE);
-                statusBlinkerTimeline.play();
+                Platform.runLater(() -> {
+                    connectionStatusText.setText("Critical Error");
+                    statusBlinkerTimeline.stop();
+                    statusBlinkerTimeline = new Timeline(new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(255, 74, 74))),
+                            new KeyFrame(Duration.seconds(1), evt -> connectionStatus.setFill(javafx.scene.paint.Color.rgb(146, 42, 42))));
+                    statusBlinkerTimeline.setCycleCount(Animation.INDEFINITE);
+                    statusBlinkerTimeline.play();
+                });
                 break;
             default:
-                connectionStatusText.setText("Unknown");
-                connectionStatus.setFill(javafx.scene.paint.Color.rgb(0, 0, 0));
+                Platform.runLater(() -> {
+                    connectionStatusText.setText("Unknown");
+                    connectionStatus.setFill(javafx.scene.paint.Color.rgb(0, 0, 0));
+                });
                 break;
         }
     }
 
+    public void appendLogMessage(String message) {
+        Platform.runLater(() -> logTextArea.appendText(message + "\n"));
+    }
+
+    public ScatterChart<Double, Integer> getScatterChart() {
+        return scatterChart;
+    }
 }

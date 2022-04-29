@@ -86,6 +86,9 @@ public class HeartbeatReceiver implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            for (HeartbeatResponseListener entry : listenerMap.values()) {
+                entry.onError();
+            }
         } finally {
             izzyCheckup();
         }

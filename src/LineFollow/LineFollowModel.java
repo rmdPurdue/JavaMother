@@ -3,6 +3,8 @@ package LineFollow;
 import IZZYCommunication.LineFollowing.MotherOSCReceiverLineFollow;
 import IZZYCommunication.LineFollowing.MotherOSCSenderLineFollow;
 import IZZYCommunication.LineFollowing.OSCAddresses;
+import IZZYCommunication.Logging.LogServer;
+import LineFollow.Plotting.PlotLoop;
 import com.illposed.osc.OSCMessage;
 import IZZYCommunication.Heartbeat.HeartbeatResponseListener;
 import IZZYCommunication.Heartbeat.HeartbeatSender;
@@ -27,6 +29,8 @@ public class LineFollowModel implements HeartbeatResponseListener {
     private MotherOSCReceiverLineFollow receiver;
     private LineFollowController lineFollowController;
     private LineFollowSensorLogger sensorLogger;
+    private LogServer logServer;
+    private PlotLoop plotLoop;
 
     public LineFollowModel(InetAddress ipAddress) throws UnknownHostException, SocketException {
         currentInstance = this;
@@ -39,7 +43,9 @@ public class LineFollowModel implements HeartbeatResponseListener {
 
         try {
             this.sensorLogger = new LineFollowSensorLogger();
-            this.receiver = new MotherOSCReceiverLineFollow(ipAddress, sensorLogger);
+            this.plotLoop = new PlotLoop();
+            this.receiver = new MotherOSCReceiverLineFollow(ipAddress, sensorLogger, plotLoop);
+            this.logServer = new LogServer();
         } catch (FileNotFoundException e) {
             this.receiver = new MotherOSCReceiverLineFollow(ipAddress);
             e.printStackTrace();
@@ -98,6 +104,9 @@ public class LineFollowModel implements HeartbeatResponseListener {
     public void setLineFollowController(final LineFollowController controller) {
         this.lineFollowController = controller;
         this.receiver.setLineFollowController(controller);
+        this.logServer.setLineFollowController(controller);
+        this.plotLoop.setLineFollowController(controller);
+        this.logServer.start();
     }
 
     private void startHeartbeat() {
@@ -113,6 +122,10 @@ public class LineFollowModel implements HeartbeatResponseListener {
         if (sensorLogger != null) {
             sensorLogger.newFile();
         }
+    }
+
+    public void clearPlotData() {
+        plotLoop.clearPlotData();
     }
 
     /**
@@ -131,6 +144,13 @@ public class LineFollowModel implements HeartbeatResponseListener {
     public void onRemoteDeviceTimeout() {
         if (lineFollowController != null) {
             lineFollowController.toggleConnectionStatus(IZZYStatus.MISSING);
+        }
+    }
+
+    @Override
+    public void onError() {
+        if (lineFollowController != null) {
+            lineFollowController.toggleConnectionStatus(IZZYStatus.BROKEN);
         }
     }
 
