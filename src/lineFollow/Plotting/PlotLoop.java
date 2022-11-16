@@ -1,6 +1,6 @@
-package LineFollow.Plotting;
+package lineFollow.Plotting;
 
-import LineFollow.LineFollowController;
+import lineFollow.LineFollowController;
 import javafx.application.Platform;
 import javafx.scene.chart.XYChart;
 
@@ -8,7 +8,7 @@ public class PlotLoop extends Thread {
 
     private LineFollowController controller;
     private XYChart.Series<Double, Integer> series1;
-    private XYChart.Series<Double, Integer> series2;
+//    private XYChart.Series<Double, Integer> series2;
     private XYChart.Series<Double, Integer> series3;
     private double startTime;
     private final Object syncLock;
@@ -20,8 +20,8 @@ public class PlotLoop extends Thread {
         this.series1 = new XYChart.Series<Double, Integer>();
         series1.setName("Left Sensor");
 
-        this.series2 = new XYChart.Series<Double, Integer>();
-        series2.setName("Center Sensor");
+//        this.series2 = new XYChart.Series<Double, Integer>();
+//        series2.setName("Center Sensor");
 
         this.series3 = new XYChart.Series<Double, Integer>();
         series3.setName("Right Sensor");
@@ -29,7 +29,7 @@ public class PlotLoop extends Thread {
 
     public void setLineFollowController(LineFollowController controller) {
         this.controller = controller;
-        Platform.runLater(() -> this.controller.getScatterChart().getData().addAll(series1, series2, series3));
+        Platform.runLater(() -> this.controller.getSensorPlot().getData().addAll(series1, series3));
     }
 
     public void plotData(int left, int center, int right) {
@@ -42,7 +42,7 @@ public class PlotLoop extends Thread {
             try {
                 synchronized (syncLock) {
                     series1.getData().add(new XYChart.Data<>(convertTo2Decimals(currentTime), left));
-                    series2.getData().add(new XYChart.Data<>(convertTo2Decimals(currentTime), center));
+//                    series2.getData().add(new XYChart.Data<>(convertTo2Decimals(currentTime), center));
                     series3.getData().add(new XYChart.Data<>(convertTo2Decimals(currentTime), right));
                 }
             } catch (Exception e) {
@@ -55,7 +55,7 @@ public class PlotLoop extends Thread {
         synchronized (syncLock) {
             startTime = System.currentTimeMillis();
             series1.getData().clear();
-            series2.getData().clear();
+//            series2.getData().clear();
             series3.getData().clear();
         }
     }

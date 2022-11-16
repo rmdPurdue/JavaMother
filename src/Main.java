@@ -1,6 +1,6 @@
 import IZZYCommunication.Heartbeat.HeartbeatReceiver;
 import IZZYCommunication.Heartbeat.HeartbeatSender;
-import LineFollow.LineFollowModel;
+import lineFollow.LineFollowModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

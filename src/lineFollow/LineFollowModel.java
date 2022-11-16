@@ -1,10 +1,11 @@
-package LineFollow;
+package lineFollow;
 
 import IZZYCommunication.LineFollowing.MotherOSCReceiverLineFollow;
 import IZZYCommunication.LineFollowing.MotherOSCSenderLineFollow;
 import IZZYCommunication.LineFollowing.OSCAddresses;
 import IZZYCommunication.Logging.LogServer;
-import LineFollow.Plotting.PlotLoop;
+import lineFollow.mapping.MapLoop;
+import lineFollow.Plotting.PlotLoop;
 import com.illposed.osc.OSCMessage;
 import IZZYCommunication.Heartbeat.HeartbeatResponseListener;
 import IZZYCommunication.Heartbeat.HeartbeatSender;
@@ -31,6 +32,7 @@ public class LineFollowModel implements HeartbeatResponseListener {
     private LineFollowSensorLogger sensorLogger;
     private LogServer logServer;
     private PlotLoop plotLoop;
+    private MapLoop mapLoop;
 
     public LineFollowModel(InetAddress ipAddress) throws UnknownHostException, SocketException {
         currentInstance = this;
@@ -44,7 +46,8 @@ public class LineFollowModel implements HeartbeatResponseListener {
         try {
             this.sensorLogger = new LineFollowSensorLogger();
             this.plotLoop = new PlotLoop();
-            this.receiver = new MotherOSCReceiverLineFollow(ipAddress, sensorLogger, plotLoop);
+            this.mapLoop = new MapLoop();
+            this.receiver = new MotherOSCReceiverLineFollow(ipAddress, sensorLogger, plotLoop, mapLoop);
             this.logServer = new LogServer();
         } catch (FileNotFoundException e) {
             this.receiver = new MotherOSCReceiverLineFollow(ipAddress);
@@ -106,6 +109,7 @@ public class LineFollowModel implements HeartbeatResponseListener {
         this.receiver.setLineFollowController(controller);
         this.logServer.setLineFollowController(controller);
         this.plotLoop.setLineFollowController(controller);
+        this.mapLoop.setLineFollowController(controller);
         this.logServer.start();
     }
 
@@ -126,6 +130,7 @@ public class LineFollowModel implements HeartbeatResponseListener {
 
     public void clearPlotData() {
         plotLoop.clearPlotData();
+        mapLoop.clearPlotData();
     }
 
     /**

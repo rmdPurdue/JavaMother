@@ -1,6 +1,6 @@
 package IZZYCommunication.Logging;
 
-import LineFollow.LineFollowController;
+import lineFollow.LineFollowController;
 
 import java.io.BufferedReader;
 import java.io.IOException;

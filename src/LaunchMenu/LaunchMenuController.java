@@ -1,6 +1,6 @@
 package LaunchMenu;
 
-import LineFollow.LineFollowModel;
+import lineFollow.LineFollowModel;
 import ManualControl.ManualModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

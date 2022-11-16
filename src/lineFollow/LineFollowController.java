@@ -1,5 +1,6 @@
-package LineFollow;
+package lineFollow;
 
+import javafx.scene.chart.LineChart;
 import com.illposed.osc.OSCMessage;
 import IZZYCommunication.Heartbeat.IZZYStatus;
 
@@ -40,6 +41,14 @@ public class LineFollowController {
     Text errorCorrectionSetPointValue;
     @FXML
     Text errorAngleValue;
+    @FXML
+    Text wheelDSpeedValue;
+    @FXML
+    Text wheelDPositionValue;
+    @FXML
+    Text wheelTSpeedValue;
+    @FXML
+    Text wheelTPositionValue;
     @FXML
     Text kpValue;
     @FXML
@@ -95,7 +104,9 @@ public class LineFollowController {
     @FXML
     TextArea logTextArea;
     @FXML
-    ScatterChart<Double, Integer> scatterChart;
+    ScatterChart<Double, Integer> sensorPlot;
+    @FXML
+    LineChart<Double, Double> mapPlot;
     @FXML
     BorderPane lineFollowPane;
 
@@ -107,6 +118,7 @@ public class LineFollowController {
             this.statusBlinkerTimeline = new Timeline();
             model.setLineFollowController(this);
             model.startListening();
+            mapPlot.setAxisSortingPolicy(LineChart.SortingPolicy.NONE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -228,6 +240,22 @@ public class LineFollowController {
 
     public void setErrorAngle(double errorAngle) {
         Platform.runLater(() -> errorAngleValue.setText(Double.toString(errorAngle)));
+    }
+
+    public void setWheelDSpeed(int wheelDSpeed) {
+        Platform.runLater(() -> wheelDSpeedValue.setText(Integer.toString(wheelDSpeed)));
+    }
+
+    public void setWheelDPosition(int wheelDPosition) {
+        Platform.runLater(() -> wheelDPositionValue.setText(Integer.toString(wheelDPosition)));
+    }
+
+    public void setWheelTSpeed(int wheelTSpeed) {
+        Platform.runLater(() -> wheelTSpeedValue.setText(Integer.toString(wheelTSpeed)));
+    }
+
+    public void setWheelTPosition(int wheelTPosition) {
+        Platform.runLater(() -> wheelTPositionValue.setText(Double.toString(wheelTPosition)));
     }
 
     public void setKP(double kP) {
@@ -354,7 +382,11 @@ public class LineFollowController {
         Platform.runLater(() -> logTextArea.appendText(message + "\n"));
     }
 
-    public ScatterChart<Double, Integer> getScatterChart() {
-        return scatterChart;
+    public ScatterChart<Double, Integer> getSensorPlot() {
+        return sensorPlot;
+    }
+
+    public LineChart<Double, Double> getMapPlot() {
+        return mapPlot;
     }
 }

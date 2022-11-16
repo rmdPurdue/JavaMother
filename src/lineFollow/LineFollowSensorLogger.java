@@ -1,4 +1,4 @@
-package LineFollow;
+package lineFollow;
 
 import java.io.File;
 import java.io.FileNotFoundException;
