@@ -10,7 +10,7 @@ public class LineFollowSensorLogger {
     PrintWriter pw;
 
     public LineFollowSensorLogger() throws FileNotFoundException {
-        this.f = new File("C:\\Users\\eholl\\OneDrive\\Desktop\\sensor-log\\" + System.currentTimeMillis() + ".csv");
+        this.f = new File("SensorLog-" + System.currentTimeMillis() + ".csv");
         this.pw = new PrintWriter(f);
     }
 
@@ -21,7 +21,7 @@ public class LineFollowSensorLogger {
 
     public void newFile() {
         pw.close();
-        this.f = new File("C:\\Users\\eholl\\OneDrive\\Desktop\\sensor-log\\" + System.currentTimeMillis() + ".csv");
+        this.f = new File("SensorLog-" + System.currentTimeMillis() + ".csv");
         try {
             this.pw = new PrintWriter(f);
         } catch (FileNotFoundException e) {

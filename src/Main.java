@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -58,6 +59,23 @@ public class Main extends Application {
         heartbeatSender.stopBeating();
         heartbeatReceiver.stopBeating();
         super.stop();
+        // Creating set object to hold all the threads where
+        // Thread.getAllStackTraces().keySet() returns
+        // all threads including application threads and
+        // system threads
+        Set<Thread> threadSet
+                = Thread.getAllStackTraces().keySet();
+
+        // Now, for loop is used to iterate through the
+        // threadset
+        for (Thread t : threadSet) {
+
+            // Printing the thread status using getState()
+            // method
+            System.out.println("Thread :" + t + ":"
+                    + "Thread status : "
+                    + t.getState());
+        }
     }
 
 }
