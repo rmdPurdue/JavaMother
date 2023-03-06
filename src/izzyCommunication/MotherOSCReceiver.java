@@ -1,4 +1,4 @@
-package IZZYCommunication;
+package izzyCommunication;
 
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
@@ -7,7 +7,7 @@ import com.illposed.osc.OSCPortIn;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import static IZZYCommunication.PortEnumerations.OSC_RECEIVE_PORT;
+import static izzyCommunication.PortEnumerations.OSC_RECEIVE_PORT;
 
 public abstract class MotherOSCReceiver {
 

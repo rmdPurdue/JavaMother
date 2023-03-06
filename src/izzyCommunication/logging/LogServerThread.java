@@ -1,4 +1,4 @@
-package IZZYCommunication.Logging;
+package izzyCommunication.logging;
 
 import lineFollow.LineFollowController;
 

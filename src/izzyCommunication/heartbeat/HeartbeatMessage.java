@@ -1,4 +1,4 @@
-package IZZYCommunication.Heartbeat;
+package izzyCommunication.heartbeat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lineFollow.popups.RangeMenuController">
+    <center>
+        <VBox alignment="TOP_CENTER">
+            <children>
+                <Label text="Ranges:">
+               <VBox.margin>
+                  <Insets bottom="40.0" />
+               </VBox.margin></Label>
+                <HBox alignment="TOP_CENTER">
+                    <children>
+                        <Label minWidth="175.0" text="S0 Min - (sensor not detecting)">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin></Label>
+                        <TextField fx:id="sensor0MinTextField" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="TOP_CENTER">
+                    <children>
+                        <Label minWidth="175.0" text="S0 Max - (sensor detecting)">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin></Label>
+                        <TextField fx:id="sensor0MaxTextField" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="TOP_CENTER">
+                    <children>
+                        <Label minWidth="175.0" text="S1 Min - (sensor not detecting)">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin></Label>
+                        <TextField fx:id="sensor1MinTextField" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="TOP_CENTER">
+                    <children>
+                        <Label minWidth="175.0" text="S1 Max - (sensor detecting)">
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin></Label>
+                        <TextField fx:id="sensor1MaxTextField" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <Button mnemonicParsing="false" onAction="#setSensorRanges" text="Set Ranges">
+                <VBox.margin>
+                  <Insets top="20.0" />
+                </VBox.margin></Button>
+                <Text fx:id="rangeErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoint (integer)" visible="false">
+                    <VBox.margin>
+                        <Insets bottom="5.0" top="5.0" />
+                    </VBox.margin>
+                </Text>
+            </children>
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </BorderPane.margin>
+        </VBox>
+    </center>
+    <padding>
+        <Insets bottom="20.0" left="50.0" right="50.0" top="20.0" />
+    </padding>
+</BorderPane>

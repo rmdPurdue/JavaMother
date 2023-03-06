@@ -1,7 +1,7 @@
-package IZZYCommunication.Heartbeat;
+package izzyCommunication.heartbeat;
 
-import IZZYCommunication.Heartbeat.Devices.IZZY;
-import IZZYCommunication.Heartbeat.Devices.Mother;
+import izzyCommunication.heartbeat.devices.IZZY;
+import izzyCommunication.heartbeat.devices.Mother;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -11,7 +11,7 @@ import java.net.SocketException;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static IZZYCommunication.PortEnumerations.UDP_SEND_PORT;
+import static izzyCommunication.PortEnumerations.UDP_SEND_PORT;
 
 /**
  * @author Rich Dionne

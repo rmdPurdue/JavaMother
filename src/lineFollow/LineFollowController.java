@@ -1,8 +1,11 @@
 package lineFollow;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import com.illposed.osc.OSCMessage;
-import IZZYCommunication.Heartbeat.IZZYStatus;
+import izzyCommunication.heartbeat.IZZYStatus;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -13,27 +16,27 @@ import javafx.fxml.FXML;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.Objects;
 
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_SPEED;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STATE;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STOP;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_THRESHOLD;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_TUNE;
-import static IZZYCommunication.LineFollowing.OSCAddresses.RESET_SYSTEM;
-import static IZZYCommunication.LineFollowing.OSCAddresses.STOP_PROCESSING;
+import static izzyCommunication.lineFollowing.OSCAddresses.*;
 
 public class LineFollowController {
 
     LineFollowModel model;
     IZZYStatus currentStatus;
     Timeline statusBlinkerTimeline;
+
+    Stage pidStage;
+    Stage rangeStage;
+    Stage thresholdStage;
 
     @FXML
     Text driveSpeedValue;
@@ -81,22 +84,6 @@ public class LineFollowController {
     Slider wirePositionSlider;
     @FXML
     Slider speedControlSlider;
-    @FXML
-    TextField kpTextField;
-    @FXML
-    TextField kiTextField;
-    @FXML
-    TextField kdTextField;
-    @FXML
-    Text kErrorMessage;
-    @FXML
-    Text thresholdErrorMessage;
-    @FXML
-    TextField leftThresholdTextField;
-    @FXML
-    TextField centerThresholdTextField;
-    @FXML
-    TextField rightThresholdTextField;
     @FXML
     Circle connectionStatus;
     @FXML
@@ -171,38 +158,6 @@ public class LineFollowController {
     }
 
     @FXML
-    public void setTuningButtonClicked(ActionEvent e) {
-        Platform.runLater(() -> kErrorMessage.setVisible(false));
-        OSCMessage outgoingMessage = new OSCMessage();
-        try {
-            outgoingMessage.addArgument(Double.parseDouble(kpTextField.getText())); //kp
-            outgoingMessage.addArgument(Double.parseDouble(kiTextField.getText())); //ki
-            outgoingMessage.addArgument(Double.parseDouble(kdTextField.getText())); //kd
-            model.sendMessage(outgoingMessage, FOLLOW_LINE_TUNE);
-        } catch (NumberFormatException exception) {
-            Platform.runLater(() -> kErrorMessage.setVisible(true));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    @FXML
-    public void setThresholdButtonClicked(ActionEvent e) {
-        Platform.runLater(() -> thresholdErrorMessage.setVisible(false));
-        OSCMessage outgoingMessage = new OSCMessage();
-        try {
-            outgoingMessage.addArgument(Integer.parseInt(leftThresholdTextField.getText()));
-            outgoingMessage.addArgument(Integer.parseInt(centerThresholdTextField.getText()));
-            outgoingMessage.addArgument(Integer.parseInt(rightThresholdTextField.getText()));
-            model.sendMessage(outgoingMessage, FOLLOW_LINE_THRESHOLD);
-        } catch (NumberFormatException exception) {
-            Platform.runLater(() -> thresholdErrorMessage.setVisible(true));
-        } catch (IOException exception) {
-            exception.printStackTrace();
-        }
-    }
-
-    @FXML
     public void clearPlotButtonClicked(ActionEvent e) {
         model.clearPlotData();
         model.restartLogging();
@@ -228,6 +183,75 @@ public class LineFollowController {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    @FXML
+    public void closeApplication(ActionEvent e) {
+        model.closeApplication();
+        System.exit(0);
+    }
+
+    @FXML
+    public void openRangePopup(ActionEvent e) {
+        try {
+            final Parent rangePopupView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./popups/RangeMenuView.fxml")));
+            rangeStage = new Stage();
+            rangeStage.setTitle("Range Tuning Menu");
+            rangeStage.setResizable(false);
+            rangeStage.initModality(Modality.APPLICATION_MODAL);
+            Scene s = new Scene(rangePopupView);
+            rangeStage.setScene(s);
+            rangeStage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void openPIDPopup(ActionEvent e) {
+        try {
+            final Parent rangePopupView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./popups/PIDMenuView.fxml")));
+            pidStage = new Stage();
+            pidStage.setTitle("PID Tuning Menu");
+            pidStage.setResizable(false);
+            pidStage.initModality(Modality.APPLICATION_MODAL);
+            Scene s = new Scene(rangePopupView);
+            pidStage.setScene(s);
+            pidStage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void openThresholdPopup(ActionEvent e) {
+        try {
+            final Parent rangePopupView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("./popups/ThresholdMenuView.fxml")));
+            thresholdStage = new Stage();
+            thresholdStage.setTitle("Threshold Tuning Menu");
+            thresholdStage.setResizable(false);
+            thresholdStage.initModality(Modality.APPLICATION_MODAL);
+            Scene s = new Scene(rangePopupView);
+            thresholdStage.setScene(s);
+            thresholdStage.show();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void closeRangePopup() {
+        rangeStage.close();
+    }
+
+    @FXML
+    public void closeThresholdPopup() {
+        thresholdStage.close();
+    }
+
+    @FXML
+    public void closePIDPopup() {
+        pidStage.close();
     }
 
     public void setDriveSpeed(int driveSpeed) {

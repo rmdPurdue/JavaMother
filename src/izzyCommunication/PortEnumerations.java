@@ -1,4 +1,4 @@
-package IZZYCommunication;
+package izzyCommunication;
 
 /**
  * @author Rich Dionne

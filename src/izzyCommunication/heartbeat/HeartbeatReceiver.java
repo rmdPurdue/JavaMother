@@ -1,10 +1,10 @@
-package IZZYCommunication.Heartbeat;
+package izzyCommunication.heartbeat;
 
-import IZZYCommunication.Heartbeat.Devices.IZZY;
-import IZZYCommunication.Heartbeat.Devices.Mother;
+import izzyCommunication.heartbeat.devices.IZZY;
+import izzyCommunication.heartbeat.devices.Mother;
 
-import static IZZYCommunication.Heartbeat.MessageType.getMessageType;
-import static IZZYCommunication.PortEnumerations.UDP_RECEIVE_PORT;
+import static izzyCommunication.heartbeat.MessageType.getMessageType;
+import static izzyCommunication.PortEnumerations.UDP_RECEIVE_PORT;
 
 import java.io.IOException;
 import java.net.DatagramSocket;

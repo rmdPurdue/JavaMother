@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lineFollow.popups.PIDMenuController">
+    <center>
+        <VBox alignment="TOP_CENTER" prefWidth="100.0">
+            <children>
+                <Label text="PID Tuning:">
+                    <font>
+                        <Font name="System Bold" size="12.0" />
+                    </font>
+               <VBox.margin>
+                  <Insets bottom="20.0" />
+               </VBox.margin>
+                </Label>
+                <HBox>
+                    <children>
+                        <Label minWidth="20.0" text="Kp" />
+                        <TextField fx:id="kpTextField" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" top="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label minWidth="20.0" text="Ki" />
+                        <TextField fx:id="kiTextField" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <HBox>
+                    <children>
+                        <Label minWidth="20.0" text="Kd" />
+                        <TextField fx:id="kdTextField" />
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="10.0" />
+                    </VBox.margin>
+                </HBox>
+                <Button mnemonicParsing="false" onAction="#setTuningButtonClicked" text="Set Tuning">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin></Button>
+                <Text fx:id="kErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoints (numeric)" visible="false">
+                    <VBox.margin>
+                        <Insets top="10.0" />
+                    </VBox.margin>
+                </Text>
+            </children>
+         <BorderPane.margin>
+            <Insets top="20.0" />
+         </BorderPane.margin>
+        </VBox>
+    </center>
+    <padding>
+        <Insets bottom="20.0" left="100.0" right="100.0" top="20.0" />
+    </padding>
+</BorderPane>

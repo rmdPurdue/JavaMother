@@ -1,16 +1,16 @@
 package lineFollow;
 
-import IZZYCommunication.LineFollowing.MotherOSCReceiverLineFollow;
-import IZZYCommunication.LineFollowing.MotherOSCSenderLineFollow;
-import IZZYCommunication.LineFollowing.OSCAddresses;
-import IZZYCommunication.Logging.LogServer;
+import izzyCommunication.lineFollowing.MotherOSCReceiverLineFollow;
+import izzyCommunication.lineFollowing.MotherOSCSenderLineFollow;
+import izzyCommunication.lineFollowing.OSCAddresses;
+import izzyCommunication.logging.LogServer;
 import lineFollow.mapping.MapLoop;
-import lineFollow.Plotting.PlotLoop;
+import lineFollow.plotting.PlotLoop;
 import com.illposed.osc.OSCMessage;
-import IZZYCommunication.Heartbeat.HeartbeatResponseListener;
-import IZZYCommunication.Heartbeat.HeartbeatSender;
-import IZZYCommunication.Heartbeat.HeartbeatReceiver;
-import IZZYCommunication.Heartbeat.IZZYStatus;
+import izzyCommunication.heartbeat.HeartbeatResponseListener;
+import izzyCommunication.heartbeat.HeartbeatSender;
+import izzyCommunication.heartbeat.HeartbeatReceiver;
+import izzyCommunication.heartbeat.IZZYStatus;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -97,6 +97,8 @@ public class LineFollowModel implements HeartbeatResponseListener {
             case FOLLOW_LINE_STOP:
                 sender.sendLineEStopMessage(message);
                 break;
+            case SET_SENSOR_RANGES:
+                sender.sendSensorRangeMessage(message);
         }
     }
 
@@ -111,6 +113,10 @@ public class LineFollowModel implements HeartbeatResponseListener {
         this.plotLoop.setLineFollowController(controller);
         this.mapLoop.setLineFollowController(controller);
         this.logServer.start();
+    }
+
+    public LineFollowController getLineFollowController() {
+        return lineFollowController;
     }
 
     private void startHeartbeat() {

@@ -1,10 +1,10 @@
-package IZZYCommunication.LineFollowing;
+package izzyCommunication.lineFollowing;
 
-import IZZYCommunication.MotherOSCReceiver;
+import izzyCommunication.MotherOSCReceiver;
 import lineFollow.LineFollowController;
 import lineFollow.LineFollowSensorLogger;
 import lineFollow.mapping.MapLoop;
-import lineFollow.Plotting.PlotLoop;
+import lineFollow.plotting.PlotLoop;
 import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 

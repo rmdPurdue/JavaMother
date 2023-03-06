@@ -1,11 +1,11 @@
-package IZZYCommunication.Heartbeat.Devices;
+package izzyCommunication.heartbeat.devices;
 
-import IZZYCommunication.Heartbeat.IZZYStatus;
+import izzyCommunication.heartbeat.IZZYStatus;
 
 import java.net.InetAddress;
 import java.util.UUID;
 
-import static IZZYCommunication.Heartbeat.IZZYStatus.*;
+import static izzyCommunication.heartbeat.IZZYStatus.*;
 
 /**
  * @author Rich Dionne

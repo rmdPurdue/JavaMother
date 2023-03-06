@@ -1,4 +1,4 @@
-package lineFollow.Plotting;
+package lineFollow.plotting;
 
 import lineFollow.LineFollowController;
 import javafx.application.Platform;

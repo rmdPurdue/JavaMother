@@ -1,4 +1,4 @@
-package LaunchMenu;
+package launchMenu;
 
 import lineFollow.LineFollowModel;
 import ManualControl.ManualModel;

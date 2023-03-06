@@ -1,4 +1,4 @@
-package IZZYCommunication.Heartbeat;
+package izzyCommunication.heartbeat;
 
 public interface HeartbeatResponseListener {
     void onRemoteDeviceResponseReceived(IZZYStatus izzyStatus);

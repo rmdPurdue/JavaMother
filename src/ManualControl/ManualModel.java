@@ -7,8 +7,8 @@ import com.illposed.osc.OSCListener;
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortIn;
 import com.illposed.osc.OSCPortOut;
-import IZZYCommunication.Heartbeat.HeartbeatSender;
-import IZZYCommunication.Heartbeat.HeartbeatReceiver;
+import izzyCommunication.heartbeat.HeartbeatSender;
+import izzyCommunication.heartbeat.HeartbeatReceiver;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 

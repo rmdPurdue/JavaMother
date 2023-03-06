@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lineFollow.popups.ThresholdMenuController">
+   <center>
+       <VBox alignment="TOP_CENTER" prefWidth="100.0">
+           <children>
+               <Label text="Threshold:">
+                   <font>
+                       <Font name="System Bold" size="12.0" />
+                   </font>
+                   <VBox.margin>
+                       <Insets bottom="20.0" />
+                   </VBox.margin>
+               </Label>
+               <HBox alignment="TOP_CENTER" layoutX="10.0" layoutY="107.0">
+                   <children>
+                       <Label minWidth="40.0" text="Left" />
+                       <TextField fx:id="leftThresholdTextField" />
+                   </children>
+                   <VBox.margin>
+                       <Insets bottom="10.0" top="10.0" />
+                   </VBox.margin>
+               </HBox>
+               <HBox alignment="TOP_CENTER" layoutX="10.0" layoutY="72.0">
+                   <children>
+                       <Label minWidth="40.0" text="Center" />
+                       <TextField fx:id="centerThresholdTextField" />
+                   </children>
+                   <VBox.margin>
+                       <Insets />
+                   </VBox.margin>
+               </HBox>
+               <HBox alignment="TOP_CENTER" layoutX="10.0" layoutY="271.0">
+                   <children>
+                       <Label minWidth="40.0" text="Right" />
+                       <TextField fx:id="rightThresholdTextField" />
+                   </children>
+                   <VBox.margin>
+                       <Insets bottom="10.0" top="10.0" />
+                   </VBox.margin>
+               </HBox>
+               <Button mnemonicParsing="false" onAction="#setThresholdButtonClicked" text="Set Threshold">
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin></Button>
+               <Text fx:id="thresholdErrorMessage" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Enter Valid Datapoint (integer)" visible="false">
+                   <VBox.margin>
+                       <Insets bottom="5.0" top="5.0" />
+                   </VBox.margin>
+               </Text>
+           </children>
+         <BorderPane.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </BorderPane.margin>
+       </VBox>
+   </center>
+   <padding>
+      <Insets bottom="20.0" left="100.0" right="100.0" top="20.0" />
+   </padding>
+</BorderPane>

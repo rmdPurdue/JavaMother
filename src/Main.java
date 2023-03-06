@@ -1,5 +1,5 @@
-import IZZYCommunication.Heartbeat.HeartbeatReceiver;
-import IZZYCommunication.Heartbeat.HeartbeatSender;
+import izzyCommunication.heartbeat.HeartbeatReceiver;
+import izzyCommunication.heartbeat.HeartbeatSender;
 import lineFollow.LineFollowModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -37,7 +37,7 @@ public class Main extends Application {
         executor = Executors.newFixedThreadPool(2);
 
         final Parent launchMenuView = FXMLLoader.load(Objects.requireNonNull(
-                getClass().getResource("LaunchMenu/LaunchMenuView.fxml")));
+                getClass().getResource("launchMenu/LaunchMenuView.fxml")));
         final Scene launchScene = new Scene(launchMenuView);
 
         stage.setTitle("IZZY");

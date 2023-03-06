@@ -1,4 +1,4 @@
-package IZZYCommunication.Heartbeat;
+package izzyCommunication.heartbeat;
 
 /**
  * @author Rich Dionne

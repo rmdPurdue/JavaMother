@@ -1,4 +1,4 @@
-package IZZYCommunication.Heartbeat.Devices;
+package izzyCommunication.heartbeat.devices;
 
 import java.net.InetAddress;
 import java.util.ArrayList;

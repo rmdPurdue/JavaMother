@@ -1,4 +1,4 @@
-package IZZYCommunication.LineFollowing;
+package izzyCommunication.lineFollowing;
 
 import com.illposed.osc.OSCMessage;
 import com.illposed.osc.OSCPortOut;
@@ -7,14 +7,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_SPEED;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STATE;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_STOP;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_THRESHOLD;
-import static IZZYCommunication.LineFollowing.OSCAddresses.FOLLOW_LINE_TUNE;
-import static IZZYCommunication.LineFollowing.OSCAddresses.RESET_SYSTEM;
-import static IZZYCommunication.LineFollowing.OSCAddresses.STOP_PROCESSING;
-import static IZZYCommunication.PortEnumerations.OSC_SEND_PORT;
+import static izzyCommunication.lineFollowing.OSCAddresses.*;
+import static izzyCommunication.PortEnumerations.OSC_SEND_PORT;
 
 public class MotherOSCSenderLineFollow {
     private final OSCPortOut sender;
@@ -55,6 +49,11 @@ public class MotherOSCSenderLineFollow {
 
     public void sendLineEStopMessage(OSCMessage message) throws IOException {
         message.setAddress(FOLLOW_LINE_STOP.valueOf());
+        sender.send(message);
+    }
+
+    public void sendSensorRangeMessage(OSCMessage message) throws IOException {
+        message.setAddress(SET_SENSOR_RANGES.valueOf());
         sender.send(message);
     }
 
