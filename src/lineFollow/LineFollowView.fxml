@@ -382,7 +382,7 @@
                           <NumberAxis label="Seconds" side="BOTTOM" />
                       </xAxis>
                       <yAxis>
-                          <NumberAxis autoRanging="false" label="Sensor Reading" lowerBound="5000.0" minorTickCount="2" minorTickLength="8.0" side="LEFT" tickUnit="1000.0" upperBound="20000.0" />
+                          <NumberAxis autoRanging="false" label="Sensor Reading" lowerBound="5000.0" minorTickCount="2" minorTickLength="8.0" side="LEFT" tickUnit="1000.0" upperBound="35000.0" />
                       </yAxis>
                   </ScatterChart>
               </content>

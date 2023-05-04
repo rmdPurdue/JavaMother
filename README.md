@@ -32,6 +32,8 @@ This creates a new JDK+JRE that includes all necessary packages.
 5. Navigate to the output path you specified and click **OK**. Rename if desired.
 6. Navigate to **Project Settings** > **Project**. Set **Project SDK** to your new JDK.
 7. Click **OK**. You should now see that IntelliJ resolves all missing definitions.
-
-
 8. When building, you may need to edit the build configuration to use this new JDK. 
+
+## To Run
+
+Use IDE tools to run the Main.java class (public static void main())
